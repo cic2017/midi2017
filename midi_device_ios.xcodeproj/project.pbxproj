@@ -8,13 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		3609CDF11EE919A9007FA2DF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3609CDF01EE919A9007FA2DF /* AppDelegate.swift */; };
-		3609CDF31EE919A9007FA2DF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3609CDF21EE919A9007FA2DF /* ViewController.swift */; };
 		3609CDF61EE919A9007FA2DF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3609CDF41EE919A9007FA2DF /* Main.storyboard */; };
 		3609CDF81EE919A9007FA2DF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3609CDF71EE919A9007FA2DF /* Assets.xcassets */; };
 		3609CDFB1EE919A9007FA2DF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3609CDF91EE919A9007FA2DF /* LaunchScreen.storyboard */; };
 		3609CE051EE926D3007FA2DF /* core_midi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3609CE041EE926D3007FA2DF /* core_midi.swift */; };
 		3609CE0C1EEE257B007FA2DF /* musucseq.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3609CE0B1EEE257B007FA2DF /* musucseq.swift */; };
 		3623B7261EF8FDCA0044DDD2 /* core_midi_event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3623B7251EF8FDCA0044DDD2 /* core_midi_event.swift */; };
+		3623B7281F0259260044DDD2 /* set_dev.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3623B7271F0259260044DDD2 /* set_dev.swift */; };
 		364D5FE51EF0E0F7002F90CC /* A_Morning_in_the_Slag_Ravine_Trumpet_Solo.mid in Resources */ = {isa = PBXBuildFile; fileRef = 364D5FE41EF0E0F7002F90CC /* A_Morning_in_the_Slag_Ravine_Trumpet_Solo.mid */; };
 		364D60111EF388F7002F90CC /* FluidR3 GM2-2.SF2 in Resources */ = {isa = PBXBuildFile; fileRef = 364D60101EF388F7002F90CC /* FluidR3 GM2-2.SF2 */; };
 /* End PBXBuildFile section */
@@ -22,7 +22,6 @@
 /* Begin PBXFileReference section */
 		3609CDED1EE919A9007FA2DF /* midi_device_ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = midi_device_ios.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3609CDF01EE919A9007FA2DF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		3609CDF21EE919A9007FA2DF /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		3609CDF51EE919A9007FA2DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		3609CDF71EE919A9007FA2DF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3609CDFA1EE919A9007FA2DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -30,6 +29,7 @@
 		3609CE041EE926D3007FA2DF /* core_midi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = core_midi.swift; sourceTree = "<group>"; };
 		3609CE0B1EEE257B007FA2DF /* musucseq.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = musucseq.swift; sourceTree = "<group>"; };
 		3623B7251EF8FDCA0044DDD2 /* core_midi_event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = core_midi_event.swift; sourceTree = "<group>"; };
+		3623B7271F0259260044DDD2 /* set_dev.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = set_dev.swift; sourceTree = "<group>"; };
 		364D5FE41EF0E0F7002F90CC /* A_Morning_in_the_Slag_Ravine_Trumpet_Solo.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = A_Morning_in_the_Slag_Ravine_Trumpet_Solo.mid; sourceTree = "<group>"; };
 		364D60101EF388F7002F90CC /* FluidR3 GM2-2.SF2 */ = {isa = PBXFileReference; lastKnownFileType = file; name = "FluidR3 GM2-2.SF2"; path = "../../FluidR3 GM2-2.SF2"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -66,13 +66,13 @@
 			children = (
 				364D60101EF388F7002F90CC /* FluidR3 GM2-2.SF2 */,
 				3609CDF01EE919A9007FA2DF /* AppDelegate.swift */,
-				3609CDF21EE919A9007FA2DF /* ViewController.swift */,
 				364D5FE41EF0E0F7002F90CC /* A_Morning_in_the_Slag_Ravine_Trumpet_Solo.mid */,
 				3609CDF41EE919A9007FA2DF /* Main.storyboard */,
 				3609CDF71EE919A9007FA2DF /* Assets.xcassets */,
 				3609CDF91EE919A9007FA2DF /* LaunchScreen.storyboard */,
 				3609CDFC1EE919A9007FA2DF /* Info.plist */,
 				3609CE041EE926D3007FA2DF /* core_midi.swift */,
+				3623B7271F0259260044DDD2 /* set_dev.swift */,
 				3623B7251EF8FDCA0044DDD2 /* core_midi_event.swift */,
 				3609CE0B1EEE257B007FA2DF /* musucseq.swift */,
 			);
@@ -154,10 +154,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3609CDF31EE919A9007FA2DF /* ViewController.swift in Sources */,
 				3609CE051EE926D3007FA2DF /* core_midi.swift in Sources */,
 				3609CDF11EE919A9007FA2DF /* AppDelegate.swift in Sources */,
 				3609CE0C1EEE257B007FA2DF /* musucseq.swift in Sources */,
+				3623B7281F0259260044DDD2 /* set_dev.swift in Sources */,
 				3623B7261EF8FDCA0044DDD2 /* core_midi_event.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -284,11 +284,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = BK8JLY29K5;
 				INFOPLIST_FILE = midi_device_ios/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				NEW_SETTING = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "edu.self.midi-device-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -299,11 +301,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = BK8JLY29K5;
 				INFOPLIST_FILE = midi_device_ios/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				NEW_SETTING = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "edu.self.midi-device-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

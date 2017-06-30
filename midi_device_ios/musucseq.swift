@@ -9,12 +9,14 @@
 import Foundation
 import AudioToolbox
 import AVFoundation
+import CoreMIDI
 
 public class note
 {
     var note_msg:MIDINoteMessage = MIDINoteMessage()
     public var previous:note?
     public var next:note?
+    public var index = 0
     
     init(note_msg: MIDINoteMessage)
     {
@@ -31,6 +33,7 @@ public class note_list
     fileprivate var head: note?
     private var tail: note?
     var sampler:AVAudioUnitSampler!
+    public var num = 0
     
     public var isEmpty: Bool {
         return head == nil
@@ -46,7 +49,10 @@ public class note_list
     
     public func append(note_msg: MIDINoteMessage) {
         // 1
+        
         let new_note = note(note_msg: note_msg)
+        num += 1
+        new_note.index = num
         // 2
         if let tailNode = tail {
             new_note.previous = tailNode
@@ -109,7 +115,7 @@ public class midi_seq
 {
     var musicSequence:MusicSequence?
     let midiFileURL = Bundle.main.url(forResource: "A_Morning_in_the_Slag_Ravine_Trumpet_Solo", withExtension: "mid")
-    var midi_song:note_list?
+    let midi_song = note_list()
     var note:String = "empty"
     
     var engine: AVAudioEngine!
@@ -152,11 +158,38 @@ public class midi_seq
         }
     }
     
+    func send_event_dev(dev_num:Int, outPort:MIDIPortRef)
+    {
+        let dest:MIDIEndpointRef = MIDIGetDestination(dev_num)
+    
+        var packet:MIDIPacket = MIDIPacket()
+        packet.timeStamp = 0
+        packet.data.0 = current_note.note_msg.note
+        packet.data.1 = current_note.note_msg.velocity
+        packet.data.2 = current_note.note_msg.releaseVelocity
+        
+        var packetlist:MIDIPacketList = MIDIPacketList(numPackets:1, packet:packet)
+        MIDISend(outPort, dest, &packetlist)
+        print("send event to device\(current_note.note_msg)")
+        //MIDIPortConnectSource(<#T##port: MIDIPortRef##MIDIPortRef#>, <#T##source: MIDIEndpointRef##MIDIEndpointRef#>, <#T##connRefCon: UnsafeMutableRawPointer?##UnsafeMutableRawPointer?#>)
+    }
+    
+    public func note_on(dev_num:Int, outport:MIDIPortRef)
+    {
+        sampler.startNote(current_note.note_msg.note, withVelocity: current_note.note_msg.velocity, onChannel: 0)
+        current_note = current_note.next
+    }
+    
+    public func note_off(dev_num:Int, event:MIDINoteMessage)
+    {
+        let note_:note? = current_note
+        sampler.stopNote((note_?.note_msg.note)!, onChannel: 0)
+    }
+    
     public func note_on()
     {
         sampler.startNote(current_note.note_msg.note, withVelocity: current_note.note_msg.velocity, onChannel: 0)
-        
-        current_note = current_note.next
+
     }
     
     public func change_controller(value:UInt8)
@@ -166,8 +199,16 @@ public class midi_seq
     
     public func note_off()
     {
-        let note_:note? = current_note.previous
+        let note_:note? = current_note
         sampler.stopNote((note_?.note_msg.note)!, onChannel: 0)
+        if(current_note.next != nil)
+        {
+            current_note = current_note.next
+        }
+        else
+        {
+            current_note = midi_song.head
+        }
     }
     
     init()
@@ -185,7 +226,7 @@ public class midi_seq
         print(self.engine)
         
         //
-        let midi_song = note_list()
+        //let midi_song = note_list()
         
         var status = NewMusicSequence(&musicSequence)
         if status != OSStatus(noErr) {

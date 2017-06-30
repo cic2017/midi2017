@@ -12,23 +12,44 @@ import os.log
 import AVFoundation
 import UIKit
 
-class core_midi_event: UIViewController {
+protocol data_protocol:class
+{
+    func returnClass(dev_array:Array<Any>)
+}
+
+extension UITextView {
+    
+    func scrollToBotom() {
+        let range = NSMakeRange(text.characters.count - 1, 1);
+        scrollRangeToVisible(range);
+        print("qq")
+    }
+    
+}
+
+class core_midi_event: UIViewController, UITabBarControllerDelegate {
 
     let midi_seq_ = midi_seq()
     var midiClient = MIDIClientRef()
     var midiInputPortref = MIDIPortRef()
     //var midiClient_out: MIDIClientRef = 0
     var inPort = MIDIPortRef()
-    var outPort:MIDIPortRef = 0
+    var outPort = MIDIPortRef()
     var src:MIDIEndpointRef = MIDIGetSource(0)
     var processingGraph:AUGraph?
     var samplerUnit:AudioUnit?
     var virtualSourceEndpointRef = MIDIEndpointRef()
+    var str_test:String = ""
+    var str_event:String = ""
     
+    @IBOutlet weak var out_dev_num: UITextField!
+    public var dev_array = [String]()
+    @IBOutlet weak var current_note_index: UILabel!
     @IBOutlet weak var staus_block: UITextView!
     @IBOutlet weak var show_input_event: UITextView!
     
     @IBAction func play_sound_on(_ sender: UIButton) {
+        print("[main page] count:\(dev_array.count)")
         show_input_event.text.append("on\n")
         play_note_on()
     }
@@ -47,23 +68,51 @@ class core_midi_event: UIViewController {
     
     @IBAction func get_device(_ sender: UIButton) {
         staus_block.text = ""
+        dev_array.removeAll()
         let destinationNames = getDestinationNames()
+        //dev_array.append(destinationNames.count)
         for (index,destName) in destinationNames.enumerated()
         {
+            dev_array.append(destName)
             staus_block.text.append("Destination #\(index): \(destName)\n")
         }
+        print("[main page] count:\(dev_array.count)")
     }
     
+   func display_device()
+   {
+    staus_block.text = ""
+    dev_array.removeAll()
+    let destinationNames = getDestinationNames()
+    //dev_array.append(destinationNames.count)
+    for (index,destName) in destinationNames.enumerated()
+    {
+        dev_array.append(destName)
+        staus_block.text.append("Destination #\(index): \(destName)\n")
+    }
+    }
+    /*
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        let tab_index = tabBarController.selectedIndex
+        //print("tab bar:\(tab_index)\n")
+    }
+    */
     override func viewDidLoad() {
-        print("load +++++\n")
+        
         super.viewDidLoad()
+        self.tabBarController?.delegate = self
         midi_init()
+        display_device()
         // Do any additional setup after loading the view.
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        out_dev_num.resignFirstResponder()
     }
     
     func getDeviceName(_ endpoint:MIDIEndpointRef) -> String? {
@@ -120,7 +169,7 @@ class core_midi_event: UIViewController {
     
     
     
-    func midi_play_note(dev_num: Int)
+    func midi_play_note(dev_num: Int, event:MIDINoteMessage)
     {
         
         let destNum = dev_num
@@ -131,15 +180,55 @@ class core_midi_event: UIViewController {
         packet1.timeStamp = 0;
         packet1.length = 3;
         packet1.data.0 = 0x90 + 0; // Note On event channel 1
-        packet1.data.1 = 0x3C; // Note C3\
-        packet1.data.2 = 100; // Velocity
+        packet1.data.1 = event.note; // Note C3\
+        if(event.velocity < 20)
+        {
+            packet1.data.2 = 20; // Velocity
+        }
+        else
+        {
+            packet1.data.2 = event.velocity; // Velocity
+        }
+        str_event = String(format:"velocity:%d\(packet1.data.2)\n")
+        print(str_event)
         var packetList:MIDIPacketList = MIDIPacketList(numPackets: 1, packet: packet1);
         
         MIDISend(outPort, dest, &packetList)
         
-        MIDIPortConnectSource(inPort, src, &src)
+        //MIDIPortConnectSource(inPort, src, &src)
     }
     
+    func midi_play_send_cc(dev_num: Int, packet:MIDIPacket)
+    {
+        let destNum = dev_num
+        
+        let dest:MIDIEndpointRef = MIDIGetDestination(destNum)
+        
+
+        var packetList:MIDIPacketList = MIDIPacketList(numPackets: 1, packet: packet);
+        
+        MIDISend(outPort, dest, &packetList)
+    }
+    
+    func midi_play_note_off(dev_num: Int, event:MIDINoteMessage)
+    {
+        
+        let destNum = dev_num
+        
+        let dest:MIDIEndpointRef = MIDIGetDestination(destNum)
+        
+        var packet1:MIDIPacket = MIDIPacket();
+        packet1.timeStamp = 0;
+        packet1.length = 3;
+        packet1.data.0 = 0x90 + 0; // Note On event channel 1
+        packet1.data.1 = event.note; // Note C3\
+        packet1.data.2 = 0; // Velocity
+        var packetList:MIDIPacketList = MIDIPacketList(numPackets: 1, packet: packet1);
+        
+        MIDISend(outPort, dest, &packetList)
+        
+        //MIDIPortConnectSource(inPort, src, &src)
+    }
     
     func connectSourcesToInputPort() {
         let sourceCount = MIDIGetNumberOfSources()
@@ -189,7 +278,7 @@ class core_midi_event: UIViewController {
         } else {
             print("error creating MIDI client %@", status)
         }
-        
+        //MyMIDIReadBlock
         
         
         status = MIDIInputPortCreateWithBlock(midiClient, "MidiTest_InPort" as CFString, &inPort, readBlock)
@@ -211,31 +300,57 @@ class core_midi_event: UIViewController {
         }
         connectSourcesToInputPort()
         
-        /*
-         MIDIClientCreate("MidiTestClient" as CFString, nil, nil, &midiClient_out)
-         MIDIOutputPortCreate(midiClient_out, "MidiTest_OutPort" as CFString, &outPort)*/
-    }
-    public func play_note_on()
-    {
-        midi_seq_.note_on()
-    }
-    public func play_note_off()
-    {
-        midi_seq_.note_off()
+        
+         MIDIClientCreate("MidiTestClient" as CFString, nil, nil, &midiClient)
+         MIDIOutputPortCreate(midiClient, "MidiTest_OutPort" as CFString, &outPort)
     }
     
+    public func play_note_on()
+    {
+        let note:MIDINoteMessage = midi_seq_.current_note.note_msg
+        
+        //print(total_note_num)
+        
+        midi_play_note(dev_num: Int(out_dev_num.text!)!, event:note)
+        midi_seq_.note_on()
+        print("note on")
+    }
+    
+    public func play_note_off()
+    {
+        let note:MIDINoteMessage = (midi_seq_.current_note.note_msg)
+        midi_play_note_off(dev_num: Int(out_dev_num.text!)!, event:note)
+        midi_seq_.note_off()
+        print("note off")
+    }
+
+    func update_ui()
+    {
+        show_input_event.text.append("\(str_event)\n")
+        /*current_note_index.text = str_test
+        let range = NSMakeRange(self.show_input_event.text.characters.count - 1, 1)
+        show_input_event.scrollRangeToVisible(range)*/
+    }
     
     func show_note_event(event:String)
     {
+        
         DispatchQueue.global().async {
+            
             DispatchQueue.main.async {
+                //self.current_note_index.text = str_test
+                //let p = event
+                //let str:String=self.handle(p)
                 self.show_input_event.text.append("\(event)\n")
-                let range = NSMakeRange(self.show_input_event.text.characters.count - 1, 1)
-                self.show_input_event.scrollRangeToVisible(range)
+                //let total_note_num = self.midi_seq_.midi_song.num
+                //self.current_note_index.text = String(self.midi_seq_.current_note.index) + "/" + String(total_note_num)
+                //let range = NSMakeRange(self.show_input_event.text.characters.count - 1, 1)
+                //self.show_input_event.scrollRangeToVisible(range)
             }
         }
     }
  
+    
     func MyMIDIReadBlock(packetList: UnsafePointer<MIDIPacketList>, srcConnRefCon: UnsafeMutableRawPointer?) -> Swift.Void {
         let packets = packetList.pointee
         
@@ -244,24 +359,29 @@ class core_midi_event: UIViewController {
         var ap = UnsafeMutablePointer<MIDIPacket>.allocate(capacity: 1)
         ap.initialize(to:packet)
         var p = ap.pointee
-        var result=""
         for _ in 0 ..< packets.numPackets {
             p = ap.pointee
-            print("timestamp \(p.timeStamp)", terminator: "")
-            var hex = String(format:"0x%X", p.data.0)
-            print(" \(hex)", terminator: "")
-            hex = String(format:"0x%X", p.data.1)
-            print(" \(hex)", terminator: "")
-            hex = String(format:"0x%X", p.data.2)
-            print(" \(hex)")
+            str_event = handle(p)
+            //show_note_event(event:str_event)
             
-            result = handle(p)
-            show_note_event(event:result)
+            
+            DispatchQueue.main.async{
+                self.str_event += "\n"
+                self.current_note_index.text = self.str_event
+                self.show_input_event.text.append(self.str_event)  //addend string to uitextview
+                let range = NSMakeRange(self.show_input_event.text.characters.count - 1, 1)
+                self.show_input_event.scrollRangeToVisible(range)
+
+            }
+            str_test = String(format:"0x%X", p.data.0)
             ap = MIDIPacketNext(ap)
         }
-        
-        
     }
+    
+    func textViewDidChange(_ textView: UITextView) {
+        print("change\n")
+    }
+    
     func handle(_ packet:MIDIPacket) -> String {
         
         let status = packet.data.0
@@ -289,6 +409,7 @@ class core_midi_event: UIViewController {
         case 0xB0:
             result = String("[CC] Channel \(channel) controller \(d1) value \(d2)")
             midi_seq_.change_controller(value:d2)
+            self.midi_play_send_cc(dev_num: Int(out_dev_num.text!)!, packet:packet)
         case 0xC0:
             result = String("[PC] Channel \(channel) program \(d1)")
             
@@ -311,7 +432,7 @@ class core_midi_event: UIViewController {
         let notification = midiNotification.pointee
         print("MIDI Notify, messageId= \(notification.messageID)")
         print("MIDI Notify, messageSize= \(notification.messageSize)")
-        show_note_event(event:String("MIDI Notify, messageId= \(notification.messageID)"))
+        //show_note_event(event:String("MIDI Notify, messageId= \(notification.messageID)"))
         switch notification.messageID {
             
         // Some aspect of the current MIDISetup has changed.  No data.  Should ignore this  message if messages 2-6 are handled.
@@ -323,6 +444,8 @@ class core_midi_event: UIViewController {
             print(m)
             print("id \(m.messageID)")
             print("size \(m.messageSize)")
+            midi_init()
+            display_device()
             break
             
             

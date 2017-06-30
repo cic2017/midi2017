@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "midi_device_ios/musucseq.swift"
-            timestampString = "519618135.88009"
+            timestampString = "520137751.21959"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "119"
-            endingLineNumber = "119"
+            startingLineNumber = "125"
+            endingLineNumber = "125"
             landmarkName = "midi_seq"
             landmarkType = "3">
          </BreakpointContent>
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "midi_device_ios/musucseq.swift"
-            timestampString = "519716720.497825"
+            timestampString = "520475747.845399"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "170"
-            endingLineNumber = "170"
+            startingLineNumber = "203"
+            endingLineNumber = "203"
             landmarkName = "note_off()"
             landmarkType = "7">
          </BreakpointContent>
@@ -41,13 +41,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "midi_device_ios/core_midi_event.swift"
-            timestampString = "519813582.2424"
+            filePath = "midi_device_ios/musucseq.swift"
+            timestampString = "520137751.21959"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "244"
-            endingLineNumber = "244"
-            landmarkName = "MyMIDIReadBlock(packetList:srcConnRefCon:)"
+            startingLineNumber = "52"
+            endingLineNumber = "52"
+            landmarkName = "append(note_msg:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
