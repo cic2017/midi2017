@@ -114,7 +114,8 @@ public class note_list
 public class midi_seq
 {
     var musicSequence:MusicSequence?
-    let midiFileURL = Bundle.main.url(forResource: "A_Morning_in_the_Slag_Ravine_Trumpet_Solo", withExtension: "mid")
+    //let midiFileURL = Bundle.main.url(forResource: "A_Morning_in_the_Slag_Ravine_Trumpet_Solo", withExtension: "mid")
+    let midiFileURL = Bundle.main.url(forResource: "Morning_in_the_Slag_Ravine_版本1", withExtension: "mid")
     let midi_song = note_list()
     var note:String = "empty"
     
@@ -174,33 +175,8 @@ public class midi_seq
         //MIDIPortConnectSource(<#T##port: MIDIPortRef##MIDIPortRef#>, <#T##source: MIDIEndpointRef##MIDIEndpointRef#>, <#T##connRefCon: UnsafeMutableRawPointer?##UnsafeMutableRawPointer?#>)
     }
     
-    public func note_on(dev_num:Int, outport:MIDIPortRef)
+    public func get_note()
     {
-        sampler.startNote(current_note.note_msg.note, withVelocity: current_note.note_msg.velocity, onChannel: 0)
-        current_note = current_note.next
-    }
-    
-    public func note_off(dev_num:Int, event:MIDINoteMessage)
-    {
-        let note_:note? = current_note
-        sampler.stopNote((note_?.note_msg.note)!, onChannel: 0)
-    }
-    
-    public func note_on()
-    {
-        sampler.startNote(current_note.note_msg.note, withVelocity: current_note.note_msg.velocity, onChannel: 0)
-
-    }
-    
-    public func change_controller(value:UInt8)
-    {
-        sampler.sendController(7, withValue: value, onChannel: 0)
-    }
-    
-    public func note_off()
-    {
-        let note_:note? = current_note
-        sampler.stopNote((note_?.note_msg.note)!, onChannel: 0)
         if(current_note.next != nil)
         {
             current_note = current_note.next
@@ -211,10 +187,41 @@ public class midi_seq
         }
     }
     
+    public func note_on(channel:UInt8)
+    {
+        sampler.startNote(current_note.note_msg.note, withVelocity: current_note.note_msg.velocity, onChannel: channel)
+    }
+    
+    public func change_controller(value:UInt8, channel:UInt8)
+    {
+        sampler.sendController(7, withValue: value, onChannel: channel)
+    }
+    
+    //for local sythesizer
+    public func note_off(channel:UInt8, note:UInt8)
+    {
+        sampler.stopNote(note, onChannel: channel)
+    }
+    
+    public func note_off(channel:UInt8)
+    {
+        let note_:note? = current_note
+        sampler.stopNote((note_?.note_msg.note)!, onChannel: channel)
+        /*
+        if(current_note.next != nil)
+        {
+            current_note = current_note.next
+        }
+        else
+        {
+            current_note = midi_song.head
+        }
+ */
+    }
+    
     init()
     {
-        //
-        print("===mususeq===\n")
+        
         engine = AVAudioEngine()
         sampler = AVAudioUnitSampler()
         
@@ -295,6 +302,5 @@ public class midi_seq
         note = midi_song.print()
         previous_note = midi_song.head
         current_note = midi_song.head
-        print("===mususeq init done===\n")
     }
 }

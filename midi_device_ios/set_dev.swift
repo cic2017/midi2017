@@ -20,23 +20,22 @@ class get_dev_from
     }
 }
 */
-class set_dev: UIViewController, data_protocol {
+class set_dev: UIViewController {
     
-
-    func returnClass(dev_array: Array<Any>) {
-        print("[dev page] count:\(dev_array.count)")
-        for (index,destName) in dev_array.enumerated()
-        {
-            print("dev_page Destination #\(index): \(destName)\n")
-        }
+    @IBOutlet weak var webview: UIWebView!
+    
+    @IBAction func download_midi(_ sender: Any) {
+     //   webview.loadRequest(URLRequest(url: URL(string:"https://yuan-test.pancakeapps.com")!))
     }
-
-
     //var obj = get_dev_from()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        webview.loadRequest(URLRequest(url: URL(string:"http://yuan-test.pancakeapps.com")!))
         print("set dev page\n")
+        print("test select midi\n")
+        super.viewDidLoad()
+        
        // obj.params_protocol = self
        // obj.start()
         // Do any additional setup after loading the view.

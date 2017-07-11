@@ -346,13 +346,14 @@ class core_midi:UIViewController
         MIDIClientCreate("MidiTestClient" as CFString, nil, nil, &midiClient_out)
         MIDIOutputPortCreate(midiClient_out, "MidiTest_OutPort" as CFString, &outPort)*/
     }
+    
     public func play_note_on()
     {
-        midi_seq_.note_on()
+        midi_seq_.note_on(channel:UInt8(channel_num.text!)!)
     }
     public func play_note_off()
     {
-        midi_seq_.note_off()
+        midi_seq_.note_off(channel:UInt8(channel_num.text!)!)
     }
     
 
