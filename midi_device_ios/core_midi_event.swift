@@ -26,7 +26,11 @@ extension UITextView {
     
 }
 
-
+class global_info
+{
+    var select_file:URL = Bundle.main.url(forResource: "Morning_in_the_Slag_Ravine_版本1", withExtension: "mid")!
+}
+var globalInfo = global_info()
 
 class core_midi_event: UIViewController, UITabBarControllerDelegate {
 
@@ -81,7 +85,12 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate {
         //status_block.text.append(midi_seq_.note)
     }
 
-    
+    func set_file(file:String)
+    {
+        log(#line, str: "\(file)")
+        midi_file_name.text = file
+        
+    }
     func display_device()
    {
     staus_block.text = ""
@@ -111,6 +120,12 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate {
         // Do any additional setup after loading the view.
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        log(#line, str:"file:\(globalInfo.select_file.path)")
+        midi_file_name.text = globalInfo.select_file.lastPathComponent
+        midi_seq_.midiFileURL = globalInfo.select_file
+        midi_seq_.load_music()
+    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -263,10 +278,10 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate {
 
     func midi_init(midiNotifier: MIDINotifyBlock? = nil, reader: MIDIReadBlock? = nil){
         var status = noErr
-        
-        midi_file_name.text = midi_seq_.midiFileURL?.lastPathComponent
+         midi_file_name.text = "QQ"
         //observeNotifications()
         //enableNetwork()
+        log((#line), str:"global:\(globalInfo.select_file.path)")
         var notifyBlock: MIDINotifyBlock
         
         if midiNotifier != nil {

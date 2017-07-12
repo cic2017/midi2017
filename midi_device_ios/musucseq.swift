@@ -115,10 +115,9 @@ public class midi_seq
 {
     var musicSequence:MusicSequence?
     //let midiFileURL = Bundle.main.url(forResource: "A_Morning_in_the_Slag_Ravine_Trumpet_Solo", withExtension: "mid")
-    let midiFileURL = Bundle.main.url(forResource: "Morning_in_the_Slag_Ravine_版本1", withExtension: "mid")
-    let midi_song = note_list()
+    var midiFileURL = Bundle.main.url(forResource: "Morning_in_the_Slag_Ravine_版本1", withExtension: "mid")
+    var midi_song:note_list?
     var note:String = "empty"
-    
     var engine: AVAudioEngine!
     
     var sampler: AVAudioUnitSampler!
@@ -183,7 +182,7 @@ public class midi_seq
         }
         else
         {
-            current_note = midi_song.head
+            current_note = midi_song?.head
         }
     }
     
@@ -219,22 +218,9 @@ public class midi_seq
  */
     }
     
-    init()
+    func load_music()
     {
-        
-        engine = AVAudioEngine()
-        sampler = AVAudioUnitSampler()
-        
-        engine.attach(sampler)
-        engine.connect(sampler, to: engine.mainMixerNode, format: nil)
-        
-        loadSF2PresetIntoSampler(56)
-        startEngine()
-        print(self.engine)
-        
-        //
-        //let midi_song = note_list()
-        
+        midi_song = note_list()
         var status = NewMusicSequence(&musicSequence)
         if status != OSStatus(noErr) {
             print("bad status \(status) creating sequence")
@@ -246,8 +232,86 @@ public class midi_seq
             print("bad status \(status) creating track")
         }
         
-        let typeId = MusicSequenceFileTypeID.midiType
+        let typeId:MusicSequenceFileTypeID = MusicSequenceFileTypeID.midiType
         let flags = MusicSequenceLoadFlags.smf_ChannelsToTracks
+        //let localUrl  = file.path as! CFString
+        
+        MusicSequenceFileLoad(musicSequence!, midiFileURL as! CFURL, typeId, flags)
+        var tempo_track:MusicTrack?
+        MusicSequenceGetIndTrack(musicSequence!, 1,&tempo_track)
+        var event:MusicEventIterator?
+        NewMusicEventIterator(tempo_track!,  &event)
+        
+        var hasNext:DarwinBoolean = true
+        var timestamp:MusicTimeStamp = 0
+        var eventType:MusicEventType = 0
+        var eventData:UnsafeRawPointer?
+        var eventDataSize:UInt32 = 0
+        
+        // Run the loop
+        MusicEventIteratorHasCurrentEvent(event!, &hasNext);
+        while (hasNext).boolValue {
+            MusicEventIteratorGetEventInfo(event!,
+                                           &timestamp,
+                                           &eventType,
+                                           &eventData,
+                                           &eventDataSize);
+            
+            // Process each event he
+            
+            switch(eventType)
+            {
+            case kMusicEventType_Meta:
+                print("Meta")
+            case kMusicEventType_User:
+                print("User")
+            case kMusicEventType_MIDINoteMessage:
+                let data = UnsafePointer<MIDINoteMessage>(eventData?.assumingMemoryBound(to: MIDINoteMessage.self))
+                
+                let channel = data?.pointee.channel
+                let note = data?.pointee.note
+                let velocity = data?.pointee.velocity
+                let dur = data?.pointee.duration
+                let newNote = MIDINoteMessage(channel: channel!,note: note!,velocity: velocity!,releaseVelocity: 0,duration: dur!)
+                //print(newNote)
+                midi_song?.append(note_msg: newNote)
+            case kMusicEventType_MIDIChannelMessage:
+                print("")
+            default:
+                print("unknown")
+            }
+            
+            MusicEventIteratorNextEvent(event!);
+            MusicEventIteratorHasCurrentEvent(event!, &hasNext);
+            
+        }
+        
+        previous_note = midi_song?.head
+        current_note = midi_song?.head
+    }
+ 
+    init()
+    {
+        print("global:\(globalInfo.select_file.path)  local:\(midiFileURL?.path)\n")
+        engine = AVAudioEngine()
+        sampler = AVAudioUnitSampler()
+        
+        engine.attach(sampler)
+        engine.connect(sampler, to: engine.mainMixerNode, format: nil)
+        
+        loadSF2PresetIntoSampler(56)
+        startEngine()
+        
+        //
+        //let midi_song = note_list()
+        
+        
+        
+        load_music()
+        /*
+        let typeId:MusicSequenceFileTypeID = MusicSequenceFileTypeID.midiType
+        let flags = MusicSequenceLoadFlags.smf_ChannelsToTracks
+        
         MusicSequenceFileLoad(musicSequence!, midiFileURL as! CFURL, typeId, flags)
         
         var tempo_track:MusicTrack?
@@ -302,5 +366,6 @@ public class midi_seq
         note = midi_song.print()
         previous_note = midi_song.head
         current_note = midi_song.head
+        */
     }
 }

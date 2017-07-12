@@ -252,7 +252,7 @@
                                     <outlet property="delegate" destination="kN5-3p-0DF" id="joz-pg-Zck"/>
                                 </connections>
                             </tableView>
-                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" ambiguous="YES" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="Gjh-F1-rYs">
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="Gjh-F1-rYs">
                                 <rect key="frame" x="16" y="616" width="343" height="2"/>
                             </progressView>
                         </subviews>
@@ -260,6 +260,7 @@
                         <constraints>
                             <constraint firstItem="ODQ-z0-XaR" firstAttribute="leading" secondItem="cog-5t-S77" secondAttribute="leadingMargin" id="2FU-wZ-YfC"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Gjh-F1-rYs" secondAttribute="trailing" id="MQ9-c8-fcM"/>
+                            <constraint firstItem="cDy-Kb-C9s" firstAttribute="top" secondItem="Gjh-F1-rYs" secondAttribute="bottom" id="NFN-lN-VAa"/>
                             <constraint firstItem="ODQ-z0-XaR" firstAttribute="top" secondItem="aAQ-kv-V2y" secondAttribute="bottom" id="QCx-dp-Fxf"/>
                             <constraint firstItem="cDy-Kb-C9s" firstAttribute="top" secondItem="ODQ-z0-XaR" secondAttribute="bottom" id="UI0-iv-2UF"/>
                             <constraint firstAttribute="trailingMargin" secondItem="ODQ-z0-XaR" secondAttribute="trailing" id="VpQ-TG-mGl"/>
