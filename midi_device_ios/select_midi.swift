@@ -74,11 +74,10 @@ class midi_file
     var location = URL(string: "https://www.apple.com")
     var cell_index:IndexPath!
     var is_select:Bool=false
-    init(name:String, url:String, is_exist:Bool)
+    init(name:String, url:String)
     {
         self.name = name
         self.url = url
-        self.is_exist = is_exist
     }
 }
 
@@ -120,16 +119,33 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
         let path = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
         let documentDirectoryPath:String = path[0]
         let fileManager = FileManager()
-        let file_name:String = "/" + (downloadTask.originalRequest?.url?.lastPathComponent)!
+        var file_name:String=""
         var is_menu:Bool = false
-        let destinationURLForFile = URL(fileURLWithPath: documentDirectoryPath.appendingFormat(file_name))
+        var tmp_file_class:midi_file?
         //let destinationURLForFile = URL(fileURLWithPath: NSHomeDirectory().appendingFormat("/file.txt"))
         
         log(#line, str: "count:\(file_name)")
-        if(file_name.range(of: "txt") != nil)
+        if((downloadTask.originalRequest?.url?.lastPathComponent)!.range(of: "txt") != nil)
         {
             is_menu = true
+            file_name = "/" + (downloadTask.originalRequest?.url?.lastPathComponent)!
         }
+        else if((downloadTask.originalRequest?.url?.lastPathComponent)!.range(of: "mid") != nil)
+        {
+            tmp_file_class = get_file_call_by_url(url: (downloadTask.originalRequest?.url?.path)!)
+            if(tmp_file_class != nil)
+            {
+                file_name = "/" + (tmp_file_class?.name)! + ".mid"
+            }
+            else
+            {
+                log(#line, str: "Cannot get file class")
+            }
+            
+        }
+        log(#line, str: "count:\(file_name)")
+        let destinationURLForFile = URL(fileURLWithPath: documentDirectoryPath.appendingFormat(file_name))
+        
         if fileManager.fileExists(atPath: destinationURLForFile.path){
             //showFileWithPath(path: destinationURLForFile.path)
             print(destinationURLForFile.path)
@@ -169,18 +185,24 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
         else
         {
             log(#line, str: "file:\(destinationURLForFile.path)")
-            guard let tmp_class:midi_file = (search_file_by_name(name: destinationURLForFile.lastPathComponent))!
-            else
-            {
-                log(#line, str: "search file failed")
-                return
-            }
-            tmp_class.location = destinationURLForFile
-            tmp_class.is_exist = true
-            tableview.cellForRow(at: tmp_class.cell_index)?.textLabel?.textColor = UIColor.black
+            tmp_file_class?.location = destinationURLForFile
+            tmp_file_class?.is_exist = true
+            tableview.cellForRow(at: (tmp_file_class?.cell_index)!)?.textLabel?.textColor = UIColor.black
         }
     }
     
+    func get_file_call_by_url(url:String) -> midi_file?
+    {
+        for item in file_class
+        {
+            log(#line, str: "url:\(item.url), ori_url:\(url)")
+            if(item.url.range(of: url) != nil)
+            {
+                return item
+            }
+        }
+        return nil
+    }
     func search_file_by_name(name:String) -> midi_file?
     {
         for item in file_class
@@ -238,6 +260,10 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
         {
             cell.textLabel?.textColor = UIColor.darkGray
         }
+        else
+        {
+            cell.textLabel?.textColor = UIColor.black
+        }
         return cell
     }
     
@@ -285,7 +311,7 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
             let delete_action = UITableViewRowAction(style: .destructive, title: "Delete", handler:
             {(action, indexPath) in
                 let fileManager = FileManager()
-                let tempPath = NSHomeDirectory()+"/Documents/" + self.file_class[indexPath.row].name
+                let tempPath = NSHomeDirectory()+"/Documents/" + self.file_class[indexPath.row].name + ".mid"
                 do
                 {
                     try fileManager.removeItem(atPath: tempPath)
@@ -340,7 +366,8 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
         let documentDirectoryPath:String = path[0]+"/"
         for item in localfile
         {
-            if(file_name == item)
+            log(#line, str: "file_name:\(file_name), item:\(item)")
+            if(item.range(of: file_name) != nil)
             {
                 file.is_exist = true
                 file.location = URL(fileURLWithPath: documentDirectoryPath.appendingFormat(file_name))
@@ -374,7 +401,7 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
                 if(file.range(of: "mid") != nil)
                 {
                     self.localfile.append(file)
-                    print(file)
+                    log(#line, str: "file:\(file)")
                 }
             }
         }
@@ -400,8 +427,12 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
         for item in str
         {
             let file = item.components(separatedBy: "::")
-            var midifile:midi_file = midi_file.init(name: file[0], url: file[1], is_exist: false)
-            print("[ \(#line) ]:\(midifile.url)\n")
+            var midifile:midi_file = midi_file.init(name: file[0], url: file[1])
+            if(file[0].range(of: ".mid") == nil)
+            {
+                midifile.name = midifile.name + ".mid"
+            }
+            print("[ \(#line) ]:\(midifile.name)\n")
             file_class.append(midifile)
         }
         tableview.reloadData()
