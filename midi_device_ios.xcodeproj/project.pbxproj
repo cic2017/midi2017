@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		212990661F179CF6006BE9AB /* FluidR3 GM2-2.SF2 in Resources */ = {isa = PBXBuildFile; fileRef = 212990651F179CF6006BE9AB /* FluidR3 GM2-2.SF2 */; };
+		2129906C1F17B8DA006BE9AB /* button-play.png in Resources */ = {isa = PBXBuildFile; fileRef = 2129906B1F17B8DA006BE9AB /* button-play.png */; };
+		2129906E1F17B929006BE9AB /* file.png in Resources */ = {isa = PBXBuildFile; fileRef = 2129906D1F17B929006BE9AB /* file.png */; };
+		212990721F17B9AD006BE9AB /* guitar.png in Resources */ = {isa = PBXBuildFile; fileRef = 212990711F17B9AD006BE9AB /* guitar.png */; };
+		212990741F17BA61006BE9AB /* arrow-big-03.png in Resources */ = {isa = PBXBuildFile; fileRef = 212990731F17BA61006BE9AB /* arrow-big-03.png */; };
 		3609CDF11EE919A9007FA2DF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3609CDF01EE919A9007FA2DF /* AppDelegate.swift */; };
 		3609CDF81EE919A9007FA2DF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3609CDF71EE919A9007FA2DF /* Assets.xcassets */; };
 		3609CDFB1EE919A9007FA2DF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3609CDF91EE919A9007FA2DF /* LaunchScreen.storyboard */; };
@@ -23,6 +27,10 @@
 
 /* Begin PBXFileReference section */
 		212990651F179CF6006BE9AB /* FluidR3 GM2-2.SF2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "FluidR3 GM2-2.SF2"; sourceTree = "<group>"; };
+		2129906B1F17B8DA006BE9AB /* button-play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-play.png"; sourceTree = "<group>"; };
+		2129906D1F17B929006BE9AB /* file.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = file.png; sourceTree = "<group>"; };
+		212990711F17B9AD006BE9AB /* guitar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = guitar.png; sourceTree = "<group>"; };
+		212990731F17BA61006BE9AB /* arrow-big-03.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "arrow-big-03.png"; sourceTree = "<group>"; };
 		3609CDED1EE919A9007FA2DF /* midi_device_ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = midi_device_ios.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3609CDF01EE919A9007FA2DF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3609CDF71EE919A9007FA2DF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -68,6 +76,10 @@
 		3609CDEF1EE919A9007FA2DF /* midi_device_ios */ = {
 			isa = PBXGroup;
 			children = (
+				212990731F17BA61006BE9AB /* arrow-big-03.png */,
+				212990711F17B9AD006BE9AB /* guitar.png */,
+				2129906D1F17B929006BE9AB /* file.png */,
+				2129906B1F17B8DA006BE9AB /* button-play.png */,
 				212990651F179CF6006BE9AB /* FluidR3 GM2-2.SF2 */,
 				36479EFD1F0E38C700FE41DE /* Main.storyboard */,
 				36479F061F0F807C00FE41DE /* select_midi.swift */,
@@ -145,8 +157,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2129906C1F17B8DA006BE9AB /* button-play.png in Resources */,
 				3609CDFB1EE919A9007FA2DF /* LaunchScreen.storyboard in Resources */,
 				3609CDF81EE919A9007FA2DF /* Assets.xcassets in Resources */,
+				212990741F17BA61006BE9AB /* arrow-big-03.png in Resources */,
+				2129906E1F17B929006BE9AB /* file.png in Resources */,
+				212990721F17B9AD006BE9AB /* guitar.png in Resources */,
 				36479EFC1F0CD9E300FE41DE /* Morning_in_the_Slag_Ravine_版本1.mid in Resources */,
 				212990661F179CF6006BE9AB /* FluidR3 GM2-2.SF2 in Resources */,
 				36479EFF1F0E38C700FE41DE /* Main.storyboard in Resources */,

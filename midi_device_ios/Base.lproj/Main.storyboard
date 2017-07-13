@@ -158,7 +158,7 @@
                         </subviews>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Play" id="X99-j5-hti"/>
+                    <tabBarItem key="tabBarItem" title="Play" image="button-play.png" id="X99-j5-hti"/>
                     <navigationItem key="navigationItem" id="81g-BZ-N1O"/>
                     <connections>
                         <outlet property="cc_slider" destination="WOn-MV-5hi" id="6IG-Ej-0xd"/>
@@ -177,7 +177,7 @@
             </objects>
             <point key="canvasLocation" x="602.39999999999998" y="250.52473763118442"/>
         </scene>
-        <!--Select instruments-->
+        <!--Instrusment-->
         <scene sceneID="ykn-oD-cjo">
             <objects>
                 <viewController id="81C-tq-RS9" customClass="select_instruments" customModule="midi_device_ios" customModuleProvider="target" sceneMemberID="viewController">
@@ -216,13 +216,13 @@
                             <constraint firstItem="h3A-2y-Oxv" firstAttribute="top" secondItem="T0C-A9-Mex" secondAttribute="bottom" id="vTc-Tb-h9C"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" systemItem="featured" id="cfI-tP-zTb"/>
+                    <tabBarItem key="tabBarItem" title="Instrusment" image="guitar.png" id="cfI-tP-zTb"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ruc-cu-zo1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1388" y="249"/>
         </scene>
-        <!--Set dev-->
+        <!--Upgrade-->
         <scene sceneID="g5X-o4-AG5">
             <objects>
                 <viewController id="LGp-hg-HGh" customClass="set_dev" customModule="midi_device_ios" customModuleProvider="target" sceneMemberID="viewController">
@@ -255,7 +255,7 @@
                             <constraint firstItem="1dT-Ec-ucz" firstAttribute="top" secondItem="h7z-wt-Wwo" secondAttribute="bottom" id="wf2-2v-wN3"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" systemItem="more" id="XCT-3h-kMZ"/>
+                    <tabBarItem key="tabBarItem" title="Upgrade" image="arrow-big-03.png" id="XCT-3h-kMZ"/>
                     <connections>
                         <outlet property="webview" destination="h7z-wt-Wwo" id="2xa-tT-tlU"/>
                     </connections>
@@ -264,7 +264,7 @@
             </objects>
             <point key="canvasLocation" x="602" y="-434"/>
         </scene>
-        <!--Select midi-->
+        <!--MIDI File-->
         <scene sceneID="cq7-yX-Xqw">
             <objects>
                 <viewController id="kN5-3p-0DF" customClass="select_midi" customModule="midi_device_ios" customModuleProvider="target" sceneMemberID="viewController">
@@ -309,7 +309,7 @@
                             <constraint firstItem="Gjh-F1-rYs" firstAttribute="leading" secondItem="cog-5t-S77" secondAttribute="leadingMargin" id="wD2-E3-WSr"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" systemItem="downloads" id="Wu6-vx-Oao"/>
+                    <tabBarItem key="tabBarItem" title="MIDI File" image="file.png" id="Wu6-vx-Oao"/>
                     <connections>
                         <outlet property="downloadProgress" destination="Gjh-F1-rYs" id="REk-fL-fvk"/>
                         <outlet property="tableview" destination="ODQ-z0-XaR" id="d6a-Mm-csC"/>
@@ -343,4 +343,10 @@
             <point key="canvasLocation" x="-234.40000000000001" y="253.2233883058471"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="arrow-big-03.png" width="30" height="30"/>
+        <image name="button-play.png" width="30" height="30"/>
+        <image name="file.png" width="30" height="30"/>
+        <image name="guitar.png" width="30" height="30"/>
+    </resources>
 </document>
