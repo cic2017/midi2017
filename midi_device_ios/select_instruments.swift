@@ -168,6 +168,11 @@ class select_instruments: UIViewController, UITableViewDelegate, UITableViewData
         return instrusment_array.count
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        log((#line), str:"select")
+        globalInfo.instrusment_.name = instrusment_array[indexPath.row].name
+        globalInfo.instrusment_.id  = instrusment_array[indexPath.row].id
+    }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
         let cell = UITableViewCell(style: UITableViewCellStyle.default, reuseIdentifier: "cell")

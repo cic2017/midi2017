@@ -29,6 +29,7 @@ extension UITextView {
 class global_info
 {
     var select_file:URL = Bundle.main.url(forResource: "Morning_in_the_Slag_Ravine_版本1", withExtension: "mid")!
+    var instrusment_ = instrusment(name:"Trumpet", id:56)
 }
 var globalInfo = global_info()
 
@@ -48,6 +49,7 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate {
     var str_event:String = ""
     var timer:Timer?
     var minimal_cc:UInt8 = 0
+    @IBOutlet weak var instrusments_name: UILabel!
     @IBOutlet weak var use_local_synth: UISwitch!
     @IBOutlet weak var out_dev_num: UITextField!
     public var dev_array = [String]()
@@ -58,7 +60,6 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate {
     @IBOutlet weak var midi_file_name: UILabel!
     @IBOutlet weak var cc_slider: UISlider!
     
-    @IBOutlet weak var change_instrusments_text: UITextField!
     @IBOutlet weak var minimal_cc_show: UILabel!
     @IBAction func play_sound_on(_ sender: UIButton) {
         print("[main page] count:\(dev_array.count)")
@@ -73,11 +74,7 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate {
     @IBAction func play_sound_off(_ sender: UIButton) {
         play_note_off(key:0x81)
     }
-    
-    @IBAction func change_instruments(_ sender: UITextField) {
-        let instrusment = UInt8(change_instrusments_text.text!)
-        midi_seq_.loadSF2PresetIntoSampler(instrusment!)
-    }
+
 
     @IBAction func play_note(_ sender: UIButton) {
         //let num:Int? = Int(out_dev.text!)
@@ -125,6 +122,8 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate {
         midi_file_name.text = globalInfo.select_file.lastPathComponent
         midi_seq_.midiFileURL = globalInfo.select_file
         midi_seq_.load_music()
+        midi_seq_.loadSF2PresetIntoSampler(globalInfo.instrusment_.id)
+        instrusments_name.text = globalInfo.instrusment_.name
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -134,7 +133,6 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         out_dev_num.resignFirstResponder()
         channel_num.resignFirstResponder()
-        change_instrusments_text.resignFirstResponder()
     }
     
     func getDeviceName(_ endpoint:MIDIEndpointRef) -> String? {

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		212990661F179CF6006BE9AB /* FluidR3 GM2-2.SF2 in Resources */ = {isa = PBXBuildFile; fileRef = 212990651F179CF6006BE9AB /* FluidR3 GM2-2.SF2 */; };
 		3609CDF11EE919A9007FA2DF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3609CDF01EE919A9007FA2DF /* AppDelegate.swift */; };
 		3609CDF81EE919A9007FA2DF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3609CDF71EE919A9007FA2DF /* Assets.xcassets */; };
 		3609CDFB1EE919A9007FA2DF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3609CDF91EE919A9007FA2DF /* LaunchScreen.storyboard */; };
@@ -17,11 +18,11 @@
 		36479EFF1F0E38C700FE41DE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 36479EFD1F0E38C700FE41DE /* Main.storyboard */; };
 		36479F071F0F807C00FE41DE /* select_midi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36479F061F0F807C00FE41DE /* select_midi.swift */; };
 		364D5FE51EF0E0F7002F90CC /* A_Morning_in_the_Slag_Ravine_Trumpet_Solo.mid in Resources */ = {isa = PBXBuildFile; fileRef = 364D5FE41EF0E0F7002F90CC /* A_Morning_in_the_Slag_Ravine_Trumpet_Solo.mid */; };
-		36B8112A1F15A732000FA38D /* FluidR3 GM2-2.SF2 in Resources */ = {isa = PBXBuildFile; fileRef = 36B811291F15A732000FA38D /* FluidR3 GM2-2.SF2 */; };
 		36C83CD61F17643C009A13D9 /* select_instruments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36C83CD51F17643C009A13D9 /* select_instruments.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		212990651F179CF6006BE9AB /* FluidR3 GM2-2.SF2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "FluidR3 GM2-2.SF2"; sourceTree = "<group>"; };
 		3609CDED1EE919A9007FA2DF /* midi_device_ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = midi_device_ios.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3609CDF01EE919A9007FA2DF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3609CDF71EE919A9007FA2DF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -34,7 +35,6 @@
 		36479EFE1F0E38C700FE41DE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = midi_device_ios/Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		36479F061F0F807C00FE41DE /* select_midi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = select_midi.swift; sourceTree = "<group>"; };
 		364D5FE41EF0E0F7002F90CC /* A_Morning_in_the_Slag_Ravine_Trumpet_Solo.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = A_Morning_in_the_Slag_Ravine_Trumpet_Solo.mid; sourceTree = "<group>"; };
-		36B811291F15A732000FA38D /* FluidR3 GM2-2.SF2 */ = {isa = PBXFileReference; lastKnownFileType = file; name = "FluidR3 GM2-2.SF2"; path = "../../FluidR3 GM2-2.SF2"; sourceTree = "<group>"; };
 		36C83CD51F17643C009A13D9 /* select_instruments.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = select_instruments.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -68,7 +68,7 @@
 		3609CDEF1EE919A9007FA2DF /* midi_device_ios */ = {
 			isa = PBXGroup;
 			children = (
-				36B811291F15A732000FA38D /* FluidR3 GM2-2.SF2 */,
+				212990651F179CF6006BE9AB /* FluidR3 GM2-2.SF2 */,
 				36479EFD1F0E38C700FE41DE /* Main.storyboard */,
 				36479F061F0F807C00FE41DE /* select_midi.swift */,
 				36C83CD51F17643C009A13D9 /* select_instruments.swift */,
@@ -148,7 +148,7 @@
 				3609CDFB1EE919A9007FA2DF /* LaunchScreen.storyboard in Resources */,
 				3609CDF81EE919A9007FA2DF /* Assets.xcassets in Resources */,
 				36479EFC1F0CD9E300FE41DE /* Morning_in_the_Slag_Ravine_版本1.mid in Resources */,
-				36B8112A1F15A732000FA38D /* FluidR3 GM2-2.SF2 in Resources */,
+				212990661F179CF6006BE9AB /* FluidR3 GM2-2.SF2 in Resources */,
 				36479EFF1F0E38C700FE41DE /* Main.storyboard in Resources */,
 				364D5FE51EF0E0F7002F90CC /* A_Morning_in_the_Slag_Ravine_Trumpet_Solo.mid in Resources */,
 			);
