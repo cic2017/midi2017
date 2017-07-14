@@ -139,56 +139,7 @@ let soundfontPresets: [String: UInt8] = [
     "GunShot" : 127
 ]
 
-struct instrusment
-{
-    var name:String!
-    var id:UInt8!
-}
 
-var instrusment_array = [instrusment]()
 
-class select_instruments: UIViewController, UITableViewDelegate, UITableViewDataSource {
+var instrusment_array = [dict]()
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        for (key, value) in soundfontPresets
-        {
-            instrusment_array.append(instrusment(name:key, id:value))
-        }
-        // Do any additional setup after loading the view.
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    
-        return instrusment_array.count
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        log((#line), str:"select")
-        globalInfo.instrusment_.name = instrusment_array[indexPath.row].name
-        globalInfo.instrusment_.id  = instrusment_array[indexPath.row].id
-    }
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
-    {
-        let cell = UITableViewCell(style: UITableViewCellStyle.default, reuseIdentifier: "cell")
-        
-        cell.textLabel?.text = instrusment_array[indexPath.row].name
-        return cell
-    }
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
-}

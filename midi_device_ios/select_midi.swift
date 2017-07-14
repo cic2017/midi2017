@@ -42,7 +42,7 @@ func startDownloading (url:URL) {
 
 // MARK:- URLSessionDownloadDelegate
 func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
-    print("File download succesfully")
+    log(str:"File download succesfully")
 }
 
 func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
@@ -53,16 +53,16 @@ func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithErro
     downloadTask = nil
     downloadProgress.setProgress(0.0, animated: true)
     if (error != nil) {
-        print("didCompleteWithError \(error?.localizedDescription)")
+        log(str:"didCompleteWithError \(error?.localizedDescription)")
     }
     else {
-        print("The task finished successfully")
+        log(str:"The task finished successfully")
     }
 }
 */
-func log(_ line:Int, str:String)
+func log(line: Int = #line,funtcion:String = #function, str:String)
 {
-    print("[\(line)]: \(str)\n")
+    print("[\(funtcion)][\(line)]: \(str)\n")
 }
 
 
@@ -124,7 +124,7 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
         var tmp_file_class:midi_file?
         //let destinationURLForFile = URL(fileURLWithPath: NSHomeDirectory().appendingFormat("/file.txt"))
         
-        log(#line, str: "count:\(file_name)")
+        log(str:"count:\(file_name)")
         if((downloadTask.originalRequest?.url?.lastPathComponent)!.range(of: "txt") != nil)
         {
             is_menu = true
@@ -139,16 +139,16 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
             }
             else
             {
-                log(#line, str: "Cannot get file class")
+                log(str:"Cannot get file class")
             }
             
         }
-        log(#line, str: "count:\(file_name)")
+        log(str:"count:\(file_name)")
         let destinationURLForFile = URL(fileURLWithPath: documentDirectoryPath.appendingFormat(file_name))
         
         if fileManager.fileExists(atPath: destinationURLForFile.path){
             //showFileWithPath(path: destinationURLForFile.path)
-            print(destinationURLForFile.path)
+            log(str:destinationURLForFile.path)
             if(is_menu == true)
             {
                 do
@@ -157,14 +157,14 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
                 }
                 catch
                 {
-                         print("Oooops\n")
+                         log(str:"Oooops")
                 }
                 do {
                     try fileManager.moveItem(at: location, to: destinationURLForFile)
                     // show file
                     //showFileWithPath(path: destinationURLForFile.path)
                 }catch{
-                    print("An error occurred while moving file to destination url")
+                    log(str: "An error occurred while moving file to destination url")
                 }
             }
         }
@@ -174,7 +174,7 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
                 // show file
                 //showFileWithPath(path: destinationURLForFile.path)
             }catch {
-                print("An error occurred while moving file to destination url. Error#\((error))\n")
+                log(str:"An error occurred while moving file to destination url. Error#\((error))\n")
             }
         }
         
@@ -184,7 +184,7 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
         }
         else
         {
-            log(#line, str: "file:\(destinationURLForFile.path)")
+            log(str: "file:\(destinationURLForFile.path)")
             tmp_file_class?.location = destinationURLForFile
             tmp_file_class?.is_exist = true
             tableview.cellForRow(at: (tmp_file_class?.cell_index)!)?.textLabel?.textColor = UIColor.black
@@ -195,7 +195,7 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
     {
         for item in file_class
         {
-            log(#line, str: "url:\(item.url), ori_url:\(url)")
+            log(str: "url:\(item.url), ori_url:\(url)")
             if(item.url.range(of: url) != nil)
             {
                 return item
@@ -233,10 +233,10 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
         downloadTask = nil
         downloadProgress.setProgress(0.0, animated: true)
         if (error != nil) {
-            print("didCompleteWithError \(error?.localizedDescription ?? "no value")")
+            log(str:"didCompleteWithError \(error?.localizedDescription ?? "no value")")
         }
         else {
-            print("The task finished successfully")
+            log(str:"The task finished successfully")
         }
     }
     
@@ -268,20 +268,20 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        log(#line, str: "count:\(file_class.count)")
+        log(str: "count:\(file_class.count)")
         return file_class.count
     }
     //select row
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        log(#line, str: "row:\(indexPath.row)")
-        log(#line, str: "filelst[\(indexPath.row)]:\(file_class[indexPath.row].name)")
+        log(str: "row:\(indexPath.row)")
+        log(str: "filelst[\(indexPath.row)]:\(file_class[indexPath.row].name)")
         
     }
     //delect row
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if(editingStyle == .delete)
         {
-            log(#line, str: "delete")
+            log(str:"delete")
         }
     }
     
@@ -294,11 +294,11 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
             {(action, indexPath) in
             
             let file = self.file_class[indexPath.row].url
-            log(#line, str: "\(file)")
+            log(str: "\(file)")
             guard let dwLink = URL(string: file.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)
             else
             {
-                log(#line, str: "Could not parse URL")
+                log(str: "Could not parse URL")
                 return
             }
             self.startDownloading(url: dwLink)
@@ -318,7 +318,7 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
                 }
                 catch
                 {
-                    print("Delete File Failed. Error:\(error)\n")
+                    log(str:"Delete File Failed. Error:\(error)\n")
                     self.list_directory()
                 }
                 self.file_class[indexPath.row].is_exist = false
@@ -331,7 +331,7 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
                 let select_action = UITableViewRowAction(style: .normal, title: "Select", handler:
                 {(action, indexPath) in
                     let select_file = self.file_class[indexPath.row].name
-                    log(#line, str: "\(select_file)")
+                    log(str: "\(select_file)")
                     self.file_class[indexPath.row].is_select = true
                     tableView.cellForRow(at: indexPath)?.textLabel?.textColor = UIColor.blue
                     self.unselect_file_for_tableview(row:indexPath.row)
@@ -366,7 +366,7 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
         let documentDirectoryPath:String = path[0]+"/"
         for item in localfile
         {
-            log(#line, str: "file_name:\(file_name), item:\(item)")
+            log(str: "file_name:\(file_name), item:\(item)")
             if(item.range(of: file_name) != nil)
             {
                 file.is_exist = true
@@ -381,11 +381,11 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
         do{
             let fileList = try FileManager.default.contentsOfDirectory(atPath: tempPath)
             for file in fileList{
-                print(file)
+                log(str:file)
             }
         }
         catch{
-            print("Cannot list directory")
+            log(str:"Cannot list directory")
         }
     }
     
@@ -401,12 +401,12 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
                 if(file.range(of: "mid") != nil)
                 {
                     self.localfile.append(file)
-                    log(#line, str: "file:\(file)")
+                    log(str:"file:\(file)")
                 }
             }
         }
         catch{
-            print("Cannot list directory")
+            log(str:"Cannot list directory")
         }
     }
     
@@ -418,7 +418,7 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
             let str = loading.components(separatedBy: "\n")
             parse_file_into_array(str: str)
         }catch{
-            print("No save file in path:\(filePath)\n")
+            log(str:"No save file in path:\(filePath)\n")
         }
     }
 
@@ -432,7 +432,7 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
             {
                 midifile.name = midifile.name + ".mid"
             }
-            print("[ \(#line) ]:\(midifile.name)\n")
+            log(str:"[ \(#line) ]:\(midifile.name)\n")
             file_class.append(midifile)
         }
         tableview.reloadData()

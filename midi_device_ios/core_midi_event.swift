@@ -29,11 +29,17 @@ extension UITextView {
 class global_info
 {
     var select_file:URL = Bundle.main.url(forResource: "Morning_in_the_Slag_Ravine_版本1", withExtension: "mid")!
-    var instrusment_ = instrusment(name:"Trumpet", id:56)
+    var instrusment_ = dict(name:"Trumpet", id:56)
 }
 var globalInfo = global_info()
 
-class core_midi_event: UIViewController, UITabBarControllerDelegate {
+struct dict
+{
+    var name:String!
+    var id:UInt8!
+}
+
+class core_midi_event: UIViewController, UITabBarControllerDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate {
 
     let midi_seq_ = midi_seq()
     var midiClient = MIDIClientRef()
@@ -49,17 +55,24 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate {
     var str_event:String = ""
     var timer:Timer?
     var minimal_cc:UInt8 = 0
+    var active_textField:UITextField!
+    let pickview = UIPickerView()
+    var current_dev:UInt8=0
+    var channel=[dict]()
+    //var current_arr : [String] = []
+    
+    var current_arr = [dict]()
+    var dev_array = [dict]()
     @IBOutlet weak var instrusments_name: UILabel!
     @IBOutlet weak var use_local_synth: UISwitch!
     @IBOutlet weak var out_dev_num: UITextField!
-    public var dev_array = [String]()
+
     @IBOutlet weak var current_note_index: UILabel!
-    @IBOutlet weak var staus_block: UITextView!
-    @IBOutlet weak var show_input_event: UITextView!
     @IBOutlet weak var channel_num: UITextField!
     @IBOutlet weak var midi_file_name: UILabel!
     @IBOutlet weak var cc_slider: UISlider!
     
+    @IBOutlet weak var intstrument_name: UITextField!
     @IBOutlet weak var minimal_cc_show: UILabel!
     @IBAction func play_sound_on(_ sender: UIButton) {
         print("[main page] count:\(dev_array.count)")
@@ -81,24 +94,148 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate {
         //midi_device.midi_play_note(dev_num: num!)
         //status_block.text.append(midi_seq_.note)
     }
-
+    func prepare_data()
+    {
+        //init channel arr
+        for i in 0...15
+        {
+            channel.append(dict(name:String(format:"Channel:%d", i+1), id:UInt8(i)))
+        }
+        
+        if(dev_array.count == 0)
+        {
+            out_dev_num.text = "No avalible dev"
+        }
+        
+        for (key, value) in soundfontPresets
+        {
+            instrusment_array.append(dict(name:key, id:value))
+        }
+        
+    }
+    override func viewDidLoad() {
+        
+        super.viewDidLoad()
+        
+        out_dev_num.delegate = self
+        channel_num.delegate = self
+        intstrument_name.delegate = self
+        pickview.delegate = self
+        pickview.dataSource = self
+        out_dev_num.inputView = pickview
+        channel_num.inputView = pickview
+        intstrument_name.inputView = pickview
+        self.tabBarController?.delegate = self
+        self.cc_slider.value = Float(Int(80))
+        self.minimal_cc = UInt8(minimal_cc_show.text!)!
+        midi_init()
+        display_device()
+        prepare_data()
+        // Do any additional setup after loading the view.
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        log(str:"file:\(globalInfo.select_file.path)")
+        midi_file_name.text = globalInfo.select_file.lastPathComponent
+        midi_seq_.midiFileURL = globalInfo.select_file
+        midi_seq_.load_music()
+        
+        //instrusments_name.text = globalInfo.instrusment_.name
+    }
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    /* //Close keybroad
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        out_dev_num.resignFirstResponder()
+        channel_num.resignFirstResponder()
+    }
+    */
+    //textfield and pickview
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        active_textField = textField
+        
+        switch textField
+        {
+        case out_dev_num:
+            log(str:"Edit out dev")
+            current_arr = dev_array
+            break
+        case channel_num:
+            log(str:"Edit channel")
+            current_arr = channel
+            break
+        case intstrument_name:
+            log(str:"Edit intstrument")
+            current_arr = instrusment_array
+            break
+        default:
+            log(str:"default")
+        }
+        pickview.reloadAllComponents()
+        return true
+    }
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return current_arr.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return current_arr[row].name
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        
+        log(str:"didSelect")
+        
+        if(current_arr[row].name.range(of: "Channel") != nil)
+        {
+            active_textField.text = String(current_arr[row].id)
+        }
+        else if(current_arr[row].name.range(of: "Destination") != nil)
+        {
+            active_textField.text = String(current_arr[row].name)
+            current_dev = current_arr[row].id
+        }
+        else
+        {
+            active_textField.text = String(current_arr[row].name)
+            globalInfo.instrusment_ = current_arr[row]
+            midi_seq_.loadSF2PresetIntoSampler(globalInfo.instrusment_.id)
+        }
+        active_textField.resignFirstResponder()
+        
+    }
+    
+    
     func set_file(file:String)
     {
-        log(#line, str: "\(file)")
+        log(str: "\(file)")
         midi_file_name.text = file
         
     }
     func display_device()
-   {
-    staus_block.text = ""
-    dev_array.removeAll()
-    let destinationNames = getDestinationNames()
-    //dev_array.append(destinationNames.count)
-    for (index,destName) in destinationNames.enumerated()
     {
-        dev_array.append(destName)
-        staus_block.text.append("Destination #\(index): \(destName)\n")
-    }
+        dev_array.removeAll()
+        let destinationNames = getDestinationNames()
+        //dev_array.append(destinationNames.count)
+        for (index,destName) in destinationNames.enumerated()
+        {
+            dev_array.append(dict(name:destName, id:UInt8(index)))
+            log(str:"Destination #\(index): \(destName)\n")
+        }
+        if(out_dev_num.text?.range(of: "No avalible dev") != nil && dev_array.count != 0)
+        {
+            out_dev_num.text = dev_array[0].name
+            current_dev = dev_array[0].id
+        }
+
     }
     /*
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
@@ -106,34 +243,7 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate {
         //print("tab bar:\(tab_index)\n")
     }
     */
-    override func viewDidLoad() {
-        
-        super.viewDidLoad()
-        self.tabBarController?.delegate = self
-        self.cc_slider.value = Float(Int(80))
-        self.minimal_cc = UInt8(minimal_cc_show.text!)!
-        midi_init()
-        display_device()
-        // Do any additional setup after loading the view.
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        log(#line, str:"file:\(globalInfo.select_file.path)")
-        midi_file_name.text = globalInfo.select_file.lastPathComponent
-        midi_seq_.midiFileURL = globalInfo.select_file
-        midi_seq_.load_music()
-        midi_seq_.loadSF2PresetIntoSampler(globalInfo.instrusment_.id)
-        instrusments_name.text = globalInfo.instrusment_.name
-    }
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        out_dev_num.resignFirstResponder()
-        channel_num.resignFirstResponder()
-    }
+    
     
     func getDeviceName(_ endpoint:MIDIEndpointRef) -> String? {
         var cfs: Unmanaged<CFString>?
@@ -279,7 +389,7 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate {
          midi_file_name.text = "QQ"
         //observeNotifications()
         //enableNetwork()
-        log((#line), str:"global:\(globalInfo.select_file.path)")
+        log(str:"global:\(globalInfo.select_file.path)")
         var notifyBlock: MIDINotifyBlock
         
         if midiNotifier != nil {
@@ -330,7 +440,7 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate {
          MIDIOutputPortCreate(midiClient, "MidiTest_OutPort" as CFString, &outPort)
     
         
-        timer =  Timer.scheduledTimer(timeInterval: 0.01, target: self, selector:#selector(self.update_ui), userInfo: nil, repeats: true)
+        //timer =  Timer.scheduledTimer(timeInterval: 0.01, target: self, selector:#selector(self.update_ui), userInfo: nil, repeats: true)
     }
     
     func midi_deinit()
@@ -353,7 +463,7 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate {
         note = midi_seq_.current_note.note_msg
         note_mapping[key] = note.note
         //print(total_note_num)
-        midi_play_note(dev_num: Int(out_dev_num.text!)!, event:note)
+        midi_play_note(dev_num: Int(current_dev), event:note)
         if(use_local_synth.isOn)
         {
             midi_seq_.note_on(channel:UInt8(channel_num.text!)!)
@@ -366,7 +476,7 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate {
         if(note_mapping[key] != nil)
         {
             let note = note_mapping[key]
-            midi_play_note_off(dev_num: Int(out_dev_num.text!)!, event:note!)
+            midi_play_note_off(dev_num: Int(current_dev), event:note!)
             if(use_local_synth.isOn)
             {
                 midi_seq_.note_off(channel:UInt8(channel_num.text!)!, note:note!)
@@ -381,7 +491,7 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate {
         {
             if(value == note)
             {
-                midi_play_note_off(dev_num: Int(out_dev_num.text!)!, event:note)
+                midi_play_note_off(dev_num: Int(current_dev), event:note)
                 if(use_local_synth.isOn)
                 {
                     midi_seq_.note_off(channel:UInt8(channel_num.text!)!, note:note)
@@ -389,45 +499,7 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate {
             }
         }
     }
-    
-    func update_ui()
-    {
-        
-        //show_input_event.scrollToBotom()
-        
-        if(str_event.isEmpty == false)
-        {
-        show_input_event.text.append("\(str_event)\n")
-        str_event = ""
-            show_input_event.scrollToBotom()
-        //let range = NSMakeRange(self.show_input_event.text.characters.count - 1, 1)
-        //self.show_input_event.scrollRangeToVisible(range)
-        }
-        /*current_note_index.text = str_test
-        let range = NSMakeRange(self.show_input_event.text.characters.count - 1, 1)
-        show_input_event.scrollRangeToVisible(range)*/
-    }
 
-    
-    func show_note_event(event:String)
-    {
-        
-        DispatchQueue.global().async {
-            
-            DispatchQueue.main.async {
-                //self.current_note_index.text = str_test
-                //let p = eventfqq
-                //let str:String=self.handle(p)
-                self.show_input_event.text.append("\(event)\n")
-                //let total_note_num = self.midi_seq_.midi_song.num
-                //self.current_note_index.text = String(self.midi_seq_.current_note.index) + "/" + String(total_note_num)
-                //let range = NSMakeRange(self.show_input_event.text.characters.count - 1, 1)
-                //self.show_input_event.scrollRangeToVisible(range)
-            }
-        }
-    }
-    
-    
     func MyMIDIReadBlock(packetList: UnsafePointer<MIDIPacketList>, srcConnRefCon: UnsafeMutableRawPointer?) -> Swift.Void {
         let packets = packetList.pointee
         
@@ -451,9 +523,6 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate {
 
             }
  */
-            DispatchQueue.main.async{
-                
-            }
             str_test = String(format:"0x%X", p.data.0)
             ap = MIDIPacketNext(ap)
         }
@@ -499,7 +568,7 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate {
             {
                 midi_seq_.change_controller(value:d2, channel:UInt8(channel_num.text!)!)
             }
-            self.midi_play_send_cc(dev_num: Int(out_dev_num.text!)!, packet:packet)
+            self.midi_play_send_cc(dev_num: Int(current_dev), packet:packet)
         case 0xC0:
             result = String("[PC] Channel \(channel) program \(d1)")
             

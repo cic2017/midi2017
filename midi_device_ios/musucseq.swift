@@ -299,7 +299,7 @@ public class midi_seq
         engine.attach(sampler)
         engine.connect(sampler, to: engine.mainMixerNode, format: nil)
         
-        loadSF2PresetIntoSampler(56)
+        loadSF2PresetIntoSampler(globalInfo.instrusment_.id)
         startEngine()
         
         //
