@@ -12,6 +12,9 @@ import os.log
 import AVFoundation
 import UIKit
 
+
+let NOTIFICATION_NAME = Notification.Name.init("MIDI_NOTE_NOTIFICATION")
+
 protocol data_protocol:class
 {
     func returnClass(dev_array:Array<Any>)
@@ -30,6 +33,7 @@ class global_info
 {
     var select_file:URL = Bundle.main.url(forResource: "Morning_in_the_Slag_Ravine_版本1", withExtension: "mid")!
     var instrusment_ = dict(name:"Trumpet", id:56)
+    var note:note!
 }
 var globalInfo = global_info()
 
@@ -58,6 +62,7 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate, UITextField
     var active_textField:UITextField!
     let pickview = UIPickerView()
     var current_dev:UInt8=0
+    var current_channel:UInt8 = 0
     var channel=[dict]()
     //var current_arr : [String] = []
     
@@ -74,9 +79,13 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate, UITextField
     
     @IBOutlet weak var intstrument_name: UITextField!
     @IBOutlet weak var minimal_cc_show: UILabel!
+    
+    
     @IBAction func play_sound_on(_ sender: UIButton) {
         print("[main page] count:\(dev_array.count)")
         play_note_on(key:0x81)
+        globalInfo.note = midi_seq_.current_note
+        
     }
     
     @IBAction func change_minimal_cc(_ sender: UISlider) {
@@ -116,7 +125,6 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate, UITextField
     override func viewDidLoad() {
         
         super.viewDidLoad()
-        
         out_dev_num.delegate = self
         channel_num.delegate = self
         intstrument_name.delegate = self
@@ -131,6 +139,7 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate, UITextField
         midi_init()
         display_device()
         prepare_data()
+        log(str:"")
         // Do any additional setup after loading the view.
     }
     
@@ -196,7 +205,9 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate, UITextField
         
         if(current_arr[row].name.range(of: "Channel") != nil)
         {
-            active_textField.text = String(current_arr[row].id)
+            active_textField.text = String(current_arr[row].id + 1)
+            current_channel = current_arr[row].id
+            log(str:"id:\(current_channel)")
         }
         else if(current_arr[row].name.range(of: "Destination") != nil)
         {
@@ -227,13 +238,19 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate, UITextField
         //dev_array.append(destinationNames.count)
         for (index,destName) in destinationNames.enumerated()
         {
-            dev_array.append(dict(name:destName, id:UInt8(index)))
+            dev_array.append(dict(name:"Destination #\(index): \(destName)", id:UInt8(index)))
             log(str:"Destination #\(index): \(destName)\n")
         }
         if(out_dev_num.text?.range(of: "No avalible dev") != nil && dev_array.count != 0)
         {
             out_dev_num.text = dev_array[0].name
             current_dev = dev_array[0].id
+            out_dev_num.isEnabled = true
+        }
+        if(dev_array.count == 0)
+        {
+            out_dev_num.isEnabled = false
+            out_dev_num.text = "No avalible dev"
         }
 
     }
@@ -310,13 +327,17 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate, UITextField
         packet1.timeStamp = 0;
         packet1.length = 3;
         
-        packet1.data.0 = 0x90 + UInt8(channel_num.text!)!; // Note On event channel 1
+        packet1.data.0 = 0x90 + current_channel; // Note On event channel 1
         packet1.data.1 = event.note; // Note C3
         packet1.data.2 = event.velocity; // Velocity
 
        // print(str_event)
         var packetList:MIDIPacketList = MIDIPacketList(numPackets: 1, packet: packet1);
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: NOTIFICATION_NAME, object: nil)
+        }
         
+
         MIDISend(outPort, dest, &packetList)
         
         //MIDIPortConnectSource(inPort, src, &src)
@@ -330,7 +351,7 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate, UITextField
         var packet1:MIDIPacket = MIDIPacket();
         packet1.timeStamp = 0;
         packet1.length = packet.length
-        packet1.data.0 = packet.data.0 + UInt8(channel_num.text!)! // Note On event channel 1
+        packet1.data.0 = packet.data.0 + current_channel // Note On event channel 1
         packet1.data.1 = packet.data.1; // Note C3\
         if(packet.data.2 < minimal_cc)
         {
@@ -355,7 +376,7 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate, UITextField
         var packet1:MIDIPacket = MIDIPacket();
         packet1.timeStamp = 0;
         packet1.length = 3;
-        packet1.data.0 = 0x90 + UInt8(channel_num.text!)!; // Note On event channel 1
+        packet1.data.0 = 0x90 + current_channel // Note On event channel 1
         packet1.data.1 = event; // Note C3\
         packet1.data.2 = 0; // Velocity
         var packetList:MIDIPacketList = MIDIPacketList(numPackets: 1, packet: packet1);
@@ -463,10 +484,11 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate, UITextField
         note = midi_seq_.current_note.note_msg
         note_mapping[key] = note.note
         //print(total_note_num)
+        log(str:"dev:\(Int(current_dev))")
         midi_play_note(dev_num: Int(current_dev), event:note)
         if(use_local_synth.isOn)
         {
-            midi_seq_.note_on(channel:UInt8(channel_num.text!)!)
+            midi_seq_.note_on(channel:current_channel)
         }
     }
     
@@ -479,7 +501,7 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate, UITextField
             midi_play_note_off(dev_num: Int(current_dev), event:note!)
             if(use_local_synth.isOn)
             {
-                midi_seq_.note_off(channel:UInt8(channel_num.text!)!, note:note!)
+                midi_seq_.note_off(channel:current_channel, note:note!)
             }
             note_mapping.removeValue(forKey: key)
         }
@@ -494,7 +516,7 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate, UITextField
                 midi_play_note_off(dev_num: Int(current_dev), event:note)
                 if(use_local_synth.isOn)
                 {
-                    midi_seq_.note_off(channel:UInt8(channel_num.text!)!, note:note)
+                    midi_seq_.note_off(channel:current_channel, note:note)
                 }
             }
         }
@@ -562,11 +584,11 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate, UITextField
             result = String("[CC] Channel \(channel) controller \(d1) value \(d2)")
             if(d2 < minimal_cc)
             {
-                midi_seq_.change_controller(value:minimal_cc, channel:UInt8(channel_num.text!)!)
+                midi_seq_.change_controller(value:minimal_cc, channel:current_channel)
             }
             else
             {
-                midi_seq_.change_controller(value:d2, channel:UInt8(channel_num.text!)!)
+                midi_seq_.change_controller(value:d2, channel:current_channel)
             }
             self.midi_play_send_cc(dev_num: Int(current_dev), packet:packet)
         case 0xC0:

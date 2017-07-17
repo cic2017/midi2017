@@ -135,7 +135,14 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
             tmp_file_class = get_file_call_by_url(url: (downloadTask.originalRequest?.url?.path)!)
             if(tmp_file_class != nil)
             {
-                file_name = "/" + (tmp_file_class?.name)! + ".mid"
+                if(tmp_file_class?.name.range(of: ".mid") == nil)
+                {
+                    file_name = "/" + (tmp_file_class?.name)! + ".mid"
+                }
+                else
+                {
+                    file_name = "/" + (tmp_file_class?.name)!
+                }
             }
             else
             {
@@ -186,6 +193,7 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
         {
             log(str: "file:\(destinationURLForFile.path)")
             tmp_file_class?.location = destinationURLForFile
+            
             tmp_file_class?.is_exist = true
             tableview.cellForRow(at: (tmp_file_class?.cell_index)!)?.textLabel?.textColor = UIColor.black
         }
@@ -311,7 +319,16 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
             let delete_action = UITableViewRowAction(style: .destructive, title: "Delete", handler:
             {(action, indexPath) in
                 let fileManager = FileManager()
-                let tempPath = NSHomeDirectory()+"/Documents/" + self.file_class[indexPath.row].name + ".mid"
+                var tempPath = ""
+                if(self.file_class[indexPath.row].name.range(of: ".mid") == nil)
+                {
+                    tempPath = NSHomeDirectory()+"/Documents/" + self.file_class[indexPath.row].name + ".mid"
+                }
+                else
+                {
+                    tempPath = NSHomeDirectory()+"/Documents/" + self.file_class[indexPath.row].name
+                }
+                
                 do
                 {
                     try fileManager.removeItem(atPath: tempPath)
@@ -337,6 +354,7 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
                     self.unselect_file_for_tableview(row:indexPath.row)
                 
                     globalInfo.select_file = self.file_class[indexPath.row].location!
+                     log(str:"globalInfo.select_file:\(globalInfo.select_file)\n")
                     tableView.isEditing = false
                 })
                 return [delete_action, select_action]
@@ -370,7 +388,14 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
             if(item.range(of: file_name) != nil)
             {
                 file.is_exist = true
-                file.location = URL(fileURLWithPath: documentDirectoryPath.appendingFormat(file_name))
+                if(file_name.range(of: ".mid") == nil)
+                {
+                    file.location = URL(fileURLWithPath: documentDirectoryPath.appendingFormat(file_name+".mid"))
+                }
+                else
+                {
+                    file.location = URL(fileURLWithPath: documentDirectoryPath.appendingFormat(file_name))
+                }
             }
         }
     }
@@ -428,10 +453,6 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
         {
             let file = item.components(separatedBy: "::")
             var midifile:midi_file = midi_file.init(name: file[0], url: file[1])
-            if(file[0].range(of: ".mid") == nil)
-            {
-                midifile.name = midifile.name + ".mid"
-            }
             log(str:"[ \(#line) ]:\(midifile.name)\n")
             file_class.append(midifile)
         }
