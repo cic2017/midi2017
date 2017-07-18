@@ -20,15 +20,6 @@ protocol data_protocol:class
     func returnClass(dev_array:Array<Any>)
 }
 
-extension UITextView {
-    
-    func scrollToBotom() {
-        let range = NSMakeRange(text.characters.count - 1, 1);
-        scrollRangeToVisible(range);
-    }
-    
-}
-
 class global_info
 {
     var select_file:URL = Bundle.main.url(forResource: "Morning_in_the_Slag_Ravine_版本1", withExtension: "mid")!
@@ -68,6 +59,7 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate, UITextField
     
     var current_arr = [dict]()
     var dev_array = [dict]()
+    var use_local_sythesizer:Bool = true
     @IBOutlet weak var instrusments_name: UILabel!
     @IBOutlet weak var use_local_synth: UISwitch!
     @IBOutlet weak var out_dev_num: UITextField!
@@ -80,6 +72,17 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate, UITextField
     @IBOutlet weak var intstrument_name: UITextField!
     @IBOutlet weak var minimal_cc_show: UILabel!
     
+    
+    @IBAction func change_local_synth(_ sender: Any) {
+        if(use_local_synth.isOn)
+        {
+            use_local_sythesizer = true
+        }
+        else
+        {
+            use_local_sythesizer = false
+        }
+    }
     
     @IBAction func play_sound_on(_ sender: UIButton) {
         print("[main page] count:\(dev_array.count)")
@@ -136,7 +139,7 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate, UITextField
         self.tabBarController?.delegate = self
         self.cc_slider.value = Float(Int(80))
         self.minimal_cc = UInt8(minimal_cc_show.text!)!
-        midi_init()
+        //midi_init()
         display_device()
         prepare_data()
         log(str:"")
@@ -333,11 +336,8 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate, UITextField
 
        // print(str_event)
         var packetList:MIDIPacketList = MIDIPacketList(numPackets: 1, packet: packet1);
-        DispatchQueue.main.async {
-            NotificationCenter.default.post(name: NOTIFICATION_NAME, object: nil)
-        }
         
-
+        
         MIDISend(outPort, dest, &packetList)
         
         //MIDIPortConnectSource(inPort, src, &src)
@@ -407,7 +407,7 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate, UITextField
 
     func midi_init(midiNotifier: MIDINotifyBlock? = nil, reader: MIDIReadBlock? = nil){
         var status = noErr
-         midi_file_name.text = "QQ"
+        
         //observeNotifications()
         //enableNetwork()
         log(str:"global:\(globalInfo.select_file.path)")
@@ -469,6 +469,7 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate, UITextField
         MIDIClientDispose(self.midiClient)
     }
     var note_mapping = [UInt8:UInt8]() //key:midiDev input, value:midiFile note
+   
     public func play_note_on(key:UInt8)
     {
         var note:MIDINoteMessage = midi_seq_.current_note.note_msg
@@ -486,7 +487,9 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate, UITextField
         //print(total_note_num)
         log(str:"dev:\(Int(current_dev))")
         midi_play_note(dev_num: Int(current_dev), event:note)
-        if(use_local_synth.isOn)
+        let user_info = ["data":note]
+        NotificationCenter.default.post(name: NOTIFICATION_NAME, object: nil, userInfo: user_info)
+        if(use_local_sythesizer)
         {
             midi_seq_.note_on(channel:current_channel)
         }
@@ -499,7 +502,7 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate, UITextField
         {
             let note = note_mapping[key]
             midi_play_note_off(dev_num: Int(current_dev), event:note!)
-            if(use_local_synth.isOn)
+            if(use_local_sythesizer)
             {
                 midi_seq_.note_off(channel:current_channel, note:note!)
             }
@@ -514,7 +517,7 @@ class core_midi_event: UIViewController, UITabBarControllerDelegate, UITextField
             if(value == note)
             {
                 midi_play_note_off(dev_num: Int(current_dev), event:note)
-                if(use_local_synth.isOn)
+                if(use_local_sythesizer)
                 {
                     midi_seq_.note_off(channel:current_channel, note:note)
                 }

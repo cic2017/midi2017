@@ -84,6 +84,9 @@
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hon-oW-EY2">
                                 <rect key="frame" x="226" y="212" width="51" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <connections>
+                                    <action selector="change_local_synth:" destination="BYZ-38-t0r" eventType="valueChanged" id="dt2-3P-gzN"/>
+                                </connections>
                             </switch>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Instruments :" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cSe-ji-t6A">
                                 <rect key="frame" x="213" y="172" width="110" height="21"/>
@@ -265,7 +268,7 @@
             </objects>
             <point key="canvasLocation" x="1398" y="-434"/>
         </scene>
-        <!--Item-->
+        <!--Sheet-->
         <scene sceneID="SFl-UI-prv">
             <objects>
                 <viewController id="W4r-cR-1HA" customClass="display_the_sheet_music" customModule="midi_device_ios" customModuleProvider="target" sceneMemberID="viewController">
@@ -277,24 +280,28 @@
                         <rect key="frame" x="0.0" y="0.0" width="667" height="375"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EFX-8L-N86">
-                                <rect key="frame" x="95" y="72" width="42" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EFX-8L-N86">
+                                <rect key="frame" x="70" y="70" width="527" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="EFX-8L-N86" firstAttribute="leading" secondItem="pth-yG-bUG" secondAttribute="leadingMargin" constant="50" id="VJW-ks-YV4"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="EFX-8L-N86" secondAttribute="trailing" constant="50" id="Xjw-2c-gtk"/>
+                            <constraint firstItem="EFX-8L-N86" firstAttribute="top" secondItem="MXT-an-MkL" secondAttribute="bottom" constant="50" id="jmh-Mo-BTS"/>
+                        </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Item" id="rf8-OB-jNO"/>
+                    <tabBarItem key="tabBarItem" title="Sheet" image="guitar.png" id="rf8-OB-jNO"/>
                     <connections>
                         <outlet property="test_notification" destination="EFX-8L-N86" id="2qB-Dm-AET"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="utd-ob-poZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-258" y="-434"/>
+            <point key="canvasLocation" x="-235" y="-434"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="XYn-DK-vOE">
@@ -308,10 +315,10 @@
                     </tabBar>
                     <connections>
                         <outlet property="delegate" destination="0n3-aj-W4N" id="VKM-mk-Fd6"/>
+                        <segue destination="W4r-cR-1HA" kind="relationship" relationship="viewControllers" id="sSX-TN-RtZ"/>
                         <segue destination="BYZ-38-t0r" kind="relationship" relationship="viewControllers" id="gsW-Mv-9uZ"/>
                         <segue destination="kN5-3p-0DF" kind="relationship" relationship="viewControllers" id="IXu-Yc-vz3"/>
                         <segue destination="LGp-hg-HGh" kind="relationship" relationship="viewControllers" id="ni5-9i-bBe"/>
-                        <segue destination="W4r-cR-1HA" kind="relationship" relationship="viewControllers" id="sSX-TN-RtZ"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0EE-UN-0fQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -324,5 +331,6 @@
         <image name="arrow-big-03.png" width="30" height="30"/>
         <image name="button-play.png" width="30" height="30"/>
         <image name="file.png" width="30" height="30"/>
+        <image name="guitar.png" width="30" height="30"/>
     </resources>
 </document>

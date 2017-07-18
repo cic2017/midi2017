@@ -9,43 +9,34 @@
 import UIKit
 
 class display_the_sheet_music: UIViewController {
-
+    let midi_dev = core_midi_event()
     @IBOutlet weak var test_notification: UILabel!
-    var tap: UITapGestureRecognizer?
+    var i = 0
     
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        //NotificationCenter.default.addObserver(self, selector: #selector(display_the_sheet_music.listener), name: NOTIFICATION_NAME, object: nil)
-        NotificationCenter.default.addObserver(forName: NOTIFICATION_NAME, object: nil, queue: OperationQueue.main, using:listener)
-        log(str:"")
-    }
-    /*
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
     
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        tap = UITapGestureRecognizer(target: self, action: Selector("handleTap:"))
-        NotificationCenter.default.addObserver(self, selector: #selector(display_the_sheet_music.listener), name: NOTIFICATION_NAME, object: nil)
-        log(str:"")
-    }
-    */
     override func viewDidLoad() {
         super.viewDidLoad()
+        midi_dev.midi_init()
+        NotificationCenter.default.addObserver(self, selector: #selector(display_the_sheet_music.listener), name: NOTIFICATION_NAME, object: nil)
         // Do any additional setup after loading the view.
+        test_notification.text = "TT"
     }
-
+ 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
+        log(str:"")
         // Dispose of any resources that can be recreated.
     }
     
-    func listener(notification:Notification)
+    func listener(notification:Notification) -> Void
     {
-        log(str:"got note:\(globalInfo.note.index)")
-        test_notification.text = String(globalInfo.note.note_msg.note)
+        log(str:"thread:\(Thread.current)")
         
+        DispatchQueue.main.sync {
+            log(str:"thread:\(Thread.current)")
+            test_notification.text = String(globalInfo.note.index)
+        }
+        i += 1
     }
     /*
     // MARK: - Navigation

@@ -184,6 +184,7 @@ public class midi_seq
         {
             current_note = midi_song?.head
         }
+        globalInfo.note = current_note
     }
     
     public func note_on(channel:UInt8)
