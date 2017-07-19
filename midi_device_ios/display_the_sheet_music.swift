@@ -8,18 +8,32 @@
 
 import UIKit
 
-class display_the_sheet_music: UIViewController {
-    let midi_dev = core_midi_event()
+class global_info
+{
+    var select_file:URL = Bundle.main.url(forResource: "Morning_in_the_Slag_Ravine_版本1", withExtension: "mid")!
+    var instrusment_ = dict(name:"Trumpet", id:56)
+    var midi_dev_obj:midi_dev!
+    var note:note!
+    init()
+    {
+        log(str:"init global info")
+    }
+}
+var globalInfo = global_info()
+
+class display_the_sheet_music: UIViewController
+{
+
     @IBOutlet weak var test_notification: UILabel!
     var i = 0
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        midi_dev.midi_init()
-        NotificationCenter.default.addObserver(self, selector: #selector(display_the_sheet_music.listener), name: NOTIFICATION_NAME, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(display_the_sheet_music.listener), name: NOTIFICATION_NOTE, object: nil)
         // Do any additional setup after loading the view.
-        test_notification.text = "TT"
+        test_notification.text = globalInfo.instrusment_.name
+        globalInfo.midi_dev_obj = midi_dev()
     }
  
     override func didReceiveMemoryWarning() {
@@ -32,10 +46,8 @@ class display_the_sheet_music: UIViewController {
     {
         log(str:"thread:\(Thread.current)")
         
-        DispatchQueue.main.sync {
-            log(str:"thread:\(Thread.current)")
-            test_notification.text = String(globalInfo.note.index)
-        }
+        test_notification.text = String(globalInfo.note.index)
+
         i += 1
     }
     /*

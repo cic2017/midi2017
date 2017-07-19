@@ -12,11 +12,12 @@
 		212990721F17B9AD006BE9AB /* guitar.png in Resources */ = {isa = PBXBuildFile; fileRef = 212990711F17B9AD006BE9AB /* guitar.png */; };
 		212990741F17BA61006BE9AB /* arrow-big-03.png in Resources */ = {isa = PBXBuildFile; fileRef = 212990731F17BA61006BE9AB /* arrow-big-03.png */; };
 		36057A1D1F1C8C470090D679 /* display_the_sheet_music.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36057A1C1F1C8C470090D679 /* display_the_sheet_music.swift */; };
+		36057A1F1F1EFB910090D679 /* midi_dev.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36057A1E1F1EFB910090D679 /* midi_dev.swift */; };
 		3609CDF11EE919A9007FA2DF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3609CDF01EE919A9007FA2DF /* AppDelegate.swift */; };
 		3609CDF81EE919A9007FA2DF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3609CDF71EE919A9007FA2DF /* Assets.xcassets */; };
 		3609CDFB1EE919A9007FA2DF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3609CDF91EE919A9007FA2DF /* LaunchScreen.storyboard */; };
 		3609CE0C1EEE257B007FA2DF /* musucseq.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3609CE0B1EEE257B007FA2DF /* musucseq.swift */; };
-		3623B7261EF8FDCA0044DDD2 /* core_midi_event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3623B7251EF8FDCA0044DDD2 /* core_midi_event.swift */; };
+		3623B7261EF8FDCA0044DDD2 /* config_midi_interface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3623B7251EF8FDCA0044DDD2 /* config_midi_interface.swift */; };
 		3623B7281F0259260044DDD2 /* set_dev.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3623B7271F0259260044DDD2 /* set_dev.swift */; };
 		36479EFC1F0CD9E300FE41DE /* Morning_in_the_Slag_Ravine_版本1.mid in Resources */ = {isa = PBXBuildFile; fileRef = 36479EFB1F0CD9E300FE41DE /* Morning_in_the_Slag_Ravine_版本1.mid */; };
 		36479EFF1F0E38C700FE41DE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 36479EFD1F0E38C700FE41DE /* Main.storyboard */; };
@@ -32,13 +33,14 @@
 		212990711F17B9AD006BE9AB /* guitar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = guitar.png; sourceTree = "<group>"; };
 		212990731F17BA61006BE9AB /* arrow-big-03.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "arrow-big-03.png"; sourceTree = "<group>"; };
 		36057A1C1F1C8C470090D679 /* display_the_sheet_music.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = display_the_sheet_music.swift; sourceTree = "<group>"; };
+		36057A1E1F1EFB910090D679 /* midi_dev.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = midi_dev.swift; sourceTree = "<group>"; };
 		3609CDED1EE919A9007FA2DF /* midi_device_ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = midi_device_ios.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3609CDF01EE919A9007FA2DF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3609CDF71EE919A9007FA2DF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3609CDFA1EE919A9007FA2DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3609CDFC1EE919A9007FA2DF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3609CE0B1EEE257B007FA2DF /* musucseq.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = musucseq.swift; sourceTree = "<group>"; };
-		3623B7251EF8FDCA0044DDD2 /* core_midi_event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = core_midi_event.swift; sourceTree = "<group>"; };
+		3623B7251EF8FDCA0044DDD2 /* config_midi_interface.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = config_midi_interface.swift; sourceTree = "<group>"; };
 		3623B7271F0259260044DDD2 /* set_dev.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = set_dev.swift; sourceTree = "<group>"; };
 		36479EFB1F0CD9E300FE41DE /* Morning_in_the_Slag_Ravine_版本1.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = "Morning_in_the_Slag_Ravine_版本1.mid"; sourceTree = "<group>"; };
 		36479EFE1F0E38C700FE41DE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = midi_device_ios/Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -93,7 +95,8 @@
 				3609CDF91EE919A9007FA2DF /* LaunchScreen.storyboard */,
 				3609CDFC1EE919A9007FA2DF /* Info.plist */,
 				3623B7271F0259260044DDD2 /* set_dev.swift */,
-				3623B7251EF8FDCA0044DDD2 /* core_midi_event.swift */,
+				3623B7251EF8FDCA0044DDD2 /* config_midi_interface.swift */,
+				36057A1E1F1EFB910090D679 /* midi_dev.swift */,
 				3609CE0B1EEE257B007FA2DF /* musucseq.swift */,
 				36479EFB1F0CD9E300FE41DE /* Morning_in_the_Slag_Ravine_版本1.mid */,
 			);
@@ -187,11 +190,12 @@
 			files = (
 				36479F071F0F807C00FE41DE /* select_midi.swift in Sources */,
 				3609CDF11EE919A9007FA2DF /* AppDelegate.swift in Sources */,
+				36057A1F1F1EFB910090D679 /* midi_dev.swift in Sources */,
 				36C83CD61F17643C009A13D9 /* select_instruments.swift in Sources */,
 				3609CE0C1EEE257B007FA2DF /* musucseq.swift in Sources */,
 				36057A1D1F1C8C470090D679 /* display_the_sheet_music.swift in Sources */,
 				3623B7281F0259260044DDD2 /* set_dev.swift in Sources */,
-				3623B7261EF8FDCA0044DDD2 /* core_midi_event.swift in Sources */,
+				3623B7261EF8FDCA0044DDD2 /* config_midi_interface.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -293,7 +293,7 @@ public class midi_seq
  
     init()
     {
-        print("global:\(globalInfo.select_file.path)  local:\(midiFileURL?.path)\n")
+        log(str:"global:\(globalInfo.select_file.path)  local:\(midiFileURL?.path)\n")
         engine = AVAudioEngine()
         sampler = AVAudioUnitSampler()
         
