@@ -46,7 +46,7 @@ class display_the_sheet_music: UIViewController
     {
         log(str:"thread:\(Thread.current)")
         
-        test_notification.text = String(globalInfo.note.index)
+        test_notification.text = String(globalInfo.note.tick)
 
         i += 1
     }

@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "midi_device_ios/musucseq.swift"
-            timestampString = "521537059.246277"
+            timestampString = "522233019.149305"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "125"
-            endingLineNumber = "125"
+            startingLineNumber = "126"
+            endingLineNumber = "126"
             landmarkName = "midi_seq"
             landmarkType = "3">
          </BreakpointContent>
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "midi_device_ios/musucseq.swift"
-            timestampString = "522041218.355685"
+            timestampString = "522233019.149305"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "209"
-            endingLineNumber = "209"
+            startingLineNumber = "210"
+            endingLineNumber = "210"
             landmarkName = "note_off(channel:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -42,12 +42,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "midi_device_ios/musucseq.swift"
-            timestampString = "520137751.21959"
+            timestampString = "522233019.149305"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "52"
-            endingLineNumber = "52"
-            landmarkName = "append(note_msg:)"
+            startingLineNumber = "53"
+            endingLineNumber = "53"
+            landmarkName = "append(note_msg:tick:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

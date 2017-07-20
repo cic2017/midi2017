@@ -17,14 +17,15 @@ public class note
     public var previous:note?
     public var next:note?
     public var index = 0
-    
-    init(note_msg: MIDINoteMessage)
+    public var tick = 0
+    init(note_msg: MIDINoteMessage, tick:Double)
     {
         self.note_msg.channel = note_msg.channel
         self.note_msg.duration = note_msg.duration
         self.note_msg.note = note_msg.note
         self.note_msg.releaseVelocity = note_msg.releaseVelocity
         self.note_msg.velocity = note_msg.velocity
+        self.tick = Int(tick)
     }
 }
 
@@ -47,10 +48,10 @@ public class note_list
         return tail
     }
     
-    public func append(note_msg: MIDINoteMessage) {
+    public func append(note_msg: MIDINoteMessage, tick:Double) {
         // 1
         
-        let new_note = note(note_msg: note_msg)
+        let new_note = note(note_msg: note_msg, tick:tick)
         num += 1
         new_note.index = num
         // 2
@@ -242,7 +243,17 @@ public class midi_seq
         MusicSequenceGetIndTrack(musicSequence!, 1,&tempo_track)
         var event:MusicEventIterator?
         NewMusicEventIterator(tempo_track!,  &event)
-        
+        var property_len:UInt32 = 0
+        var time_resolution:UInt32 = 0
+        var lengthFromMusicTimeStamp = MusicTimeStamp(1.75)
+        var tempo_track1:MusicTrack?
+        MusicSequenceGetTempoTrack(musicSequence!, &tempo_track1)
+        MusicTrackGetProperty(tempo_track1!, kSequenceTrackProperty_TimeResolution, &lengthFromMusicTimeStamp, &property_len)
+        MusicTrackGetProperty(tempo_track1!, kSequenceTrackProperty_TimeResolution, &time_resolution, &property_len)
+    
+        log(str:"lengthFromMusicTimeStamp:\(lengthFromMusicTimeStamp)")
+        log(str:"property_len:\(property_len)")
+        log(str:"time_resolution:\(time_resolution)")
         var hasNext:DarwinBoolean = true
         var timestamp:MusicTimeStamp = 0
         var eventType:MusicEventType = 0
@@ -259,7 +270,6 @@ public class midi_seq
                                            &eventDataSize);
             
             // Process each event he
-            
             switch(eventType)
             {
             case kMusicEventType_Meta:
@@ -275,7 +285,12 @@ public class midi_seq
                 let dur = data?.pointee.duration
                 let newNote = MIDINoteMessage(channel: channel!,note: note!,velocity: velocity!,releaseVelocity: 0,duration: dur!)
                 //print(newNote)
-                midi_song?.append(note_msg: newNote)
+                let tick:Double = Double(timestamp) * Double(time_resolution)
+                var beat_time:CABarBeatTime = CABarBeatTime(bar: 1, beat: 1, subbeat: 0, subbeatDivisor: 0, reserved: 0)
+                MusicSequenceBeatsToBarBeatTime(musicSequence!, timestamp, UInt32(time_resolution), &beat_time)
+                log(str:"note:\(newNote.note) duration:\(newNote.duration) timestamp:\(timestamp) tick:\(tick) barBeatTime:\(beat_time.bar) Beat:\(beat_time.beat)")
+                
+                midi_song?.append(note_msg: newNote, tick:tick)
             case kMusicEventType_MIDIChannelMessage:
                 print("")
             default:
