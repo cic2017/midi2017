@@ -18,7 +18,8 @@ public class note
     public var next:note?
     public var index = 0
     public var tick = 0
-    init(note_msg: MIDINoteMessage, tick:Double)
+    public var bar_beat = CABarBeatTime(bar: 1, beat: 1, subbeat: 0, subbeatDivisor: 0, reserved: 0)
+    init(note_msg: MIDINoteMessage, tick:Double, beat:CABarBeatTime)
     {
         self.note_msg.channel = note_msg.channel
         self.note_msg.duration = note_msg.duration
@@ -26,6 +27,7 @@ public class note
         self.note_msg.releaseVelocity = note_msg.releaseVelocity
         self.note_msg.velocity = note_msg.velocity
         self.tick = Int(tick)
+        self.bar_beat = beat
     }
 }
 
@@ -48,10 +50,10 @@ public class note_list
         return tail
     }
     
-    public func append(note_msg: MIDINoteMessage, tick:Double) {
+    public func append(note_msg: MIDINoteMessage, tick:Double, beat:CABarBeatTime) {
         // 1
         
-        let new_note = note(note_msg: note_msg, tick:tick)
+        let new_note = note(note_msg: note_msg, tick:tick, beat:beat)
         num += 1
         new_note.index = num
         // 2
@@ -288,9 +290,10 @@ public class midi_seq
                 let tick:Double = Double(timestamp) * Double(time_resolution)
                 var beat_time:CABarBeatTime = CABarBeatTime(bar: 1, beat: 1, subbeat: 0, subbeatDivisor: 0, reserved: 0)
                 MusicSequenceBeatsToBarBeatTime(musicSequence!, timestamp, UInt32(time_resolution), &beat_time)
+            
                 log(str:"note:\(newNote.note) duration:\(newNote.duration) timestamp:\(timestamp) tick:\(tick) barBeatTime:\(beat_time.bar) Beat:\(beat_time.beat)")
                 
-                midi_song?.append(note_msg: newNote, tick:tick)
+                midi_song?.append(note_msg: newNote, tick:tick, beat:beat_time)
             case kMusicEventType_MIDIChannelMessage:
                 print("")
             default:
