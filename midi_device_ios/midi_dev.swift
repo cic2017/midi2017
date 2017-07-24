@@ -123,32 +123,44 @@ class midi_dev
         packet1.length = packet.length
         packet1.data.0 = packet.data.0 + current_channel // Note On event channel 1
         packet1.data.1 = packet.data.1; // Note C3\
+        var cc = packet.data.2
         if(packet.data.2 < minimal_cc)
         {
-            packet1.data.2 = minimal_cc
+            cc = minimal_cc
         }
         else
         {
-            packet1.data.2 = packet.data.2
+            cc = packet.data.2
         }
         
-        if(packet1.data.2 / quantication_quantity <= 0)
+        var tmp = packet.data.2 / quantication_quantity
+        if(tmp <= 0)
         {
-            packet1.data.2 = quantication_quantity
+            cc = quantication_quantity
+            log(str:"cc:\(cc)")
         }
         else
         {
-            if(packet1.data.2 % quantication_quantity == 0)
+            if(tmp % quantication_quantity == 0)
             {
-                packet1.data.2 = (packet1.data.2 / quantication_quantity) * quantication_quantity
+                cc = tmp * quantication_quantity
+                log(str:"cc:\(cc)")
             }
             else
             {
-                packet1.data.2 = ((packet1.data.2 / quantication_quantity) + 1) * quantication_quantity
+                cc = (tmp + 1) * quantication_quantity
+                log(str:"cc:\(cc) 1:\(tmp)")
             }
         }
-        log(str:"cc:packet1.data.2")
-        midi_seq_.change_controller(value:packet1.data.2, channel:current_channel)
+        
+        if(cc > 127)
+        {
+            cc = 127
+        }
+        packet1.data.2 = cc
+        log(str:"quantication_quantity:\(quantication_quantity) cc:\(packet.data.2) change to:\(cc)")
+        midi_seq_.change_controller(value:cc, channel:current_channel)
+        
         var packetList:MIDIPacketList = MIDIPacketList(numPackets: 1, packet: packet1)
         MIDISend(outPort, dest, &packetList)
     }

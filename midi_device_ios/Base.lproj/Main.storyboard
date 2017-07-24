@@ -173,7 +173,7 @@
                                 </connections>
                             </slider>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uTr-Tz-0pM">
-                                <rect key="frame" x="444" y="32" width="42" height="21"/>
+                                <rect key="frame" x="399" y="32" width="169" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
@@ -195,6 +195,7 @@
                         <outlet property="out_dev_num" destination="lUg-we-Xxa" id="cm2-uc-LP5"/>
                         <outlet property="quantizatin_cc_show" destination="pVg-1y-xm7" id="uay-Nv-fKC"/>
                         <outlet property="quantization_cc" destination="8bC-Xf-vdC" id="wjg-E4-UdN"/>
+                        <outlet property="quantization_slider" destination="nlV-Ki-YYg" id="jZm-0a-Fih"/>
                         <outlet property="use_local_synth" destination="hon-oW-EY2" id="sOx-bj-gEa"/>
                     </connections>
                 </viewController>

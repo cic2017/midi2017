@@ -48,6 +48,7 @@ class config_midi_interface: UIViewController, UITabBarControllerDelegate, UITex
     @IBOutlet weak var minimal_cc_show: UILabel!
     @IBOutlet weak var quantizatin_cc_show: UILabel!
     @IBOutlet var quantization_cc: UIView!
+    @IBOutlet weak var quantization_slider: UISlider!
     
     
     @IBAction func change_local_synth(_ sender: Any) {
@@ -95,7 +96,7 @@ class config_midi_interface: UIViewController, UITabBarControllerDelegate, UITex
         //show version
         if let version = Bundle.main.infoDictionary?["CFBundleVersion"] as? String
         {
-            app_version.text = version
+            app_version.text = "ver." + version
         }
         out_dev_num.delegate = self
         channel_num.delegate = self
@@ -107,6 +108,8 @@ class config_midi_interface: UIViewController, UITabBarControllerDelegate, UITex
         intstrument_name.inputView = pickview
         self.tabBarController?.delegate = self
         self.cc_slider.value = Float(Int(80))
+        self.quantization_slider.value = Float(Int(globalInfo.midi_dev_obj.quantization))
+        quantizatin_cc_show.text = String(globalInfo.midi_dev_obj.quantization)
         if(globalInfo.midi_dev_obj.dev_array.count == 0)
         {
             out_dev_num.isEnabled = false
