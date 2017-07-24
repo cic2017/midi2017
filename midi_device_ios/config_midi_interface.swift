@@ -43,8 +43,11 @@ class config_midi_interface: UIViewController, UITabBarControllerDelegate, UITex
     @IBOutlet weak var midi_file_name: UILabel!
     @IBOutlet weak var cc_slider: UISlider!
     
+    @IBOutlet weak var app_version: UILabel!
     @IBOutlet weak var intstrument_name: UITextField!
     @IBOutlet weak var minimal_cc_show: UILabel!
+    @IBOutlet weak var quantizatin_cc_show: UILabel!
+    @IBOutlet var quantization_cc: UIView!
     
     
     @IBAction func change_local_synth(_ sender: Any) {
@@ -69,6 +72,12 @@ class config_midi_interface: UIViewController, UITabBarControllerDelegate, UITex
         globalInfo.midi_dev_obj.minimal_cc = UInt8(sender.value)
     }
     
+    @IBAction func change_quantization_cc(_ sender: UISlider) {
+        quantizatin_cc_show.text = String(Int(sender.value))
+        globalInfo.midi_dev_obj.quantization = Int(sender.value)
+        globalInfo.midi_dev_obj.change_quantity()
+    }
+    
     @IBAction func play_sound_off(_ sender: UIButton) {
         globalInfo.midi_dev_obj.play_note_off(key:0x81)
     }
@@ -82,6 +91,12 @@ class config_midi_interface: UIViewController, UITabBarControllerDelegate, UITex
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //show version
+        if let version = Bundle.main.infoDictionary?["CFBundleVersion"] as? String
+        {
+            app_version.text = version
+        }
         out_dev_num.delegate = self
         channel_num.delegate = self
         intstrument_name.delegate = self

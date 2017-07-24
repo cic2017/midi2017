@@ -26,7 +26,8 @@ class midi_dev
     var current_channel:UInt8 = 0
     var current_dev:UInt8=0
     var note_mapping = [UInt8:UInt8]() //key:midiDev input, value:midiFile note
-   
+    var quantization = 8
+    var quantication_quantity:UInt8 = 1
     func delete_note(note:UInt8)
     {
         for (key, value) in note_mapping
@@ -131,6 +132,23 @@ class midi_dev
             packet1.data.2 = packet.data.2
         }
         
+        if(packet1.data.2 / quantication_quantity <= 0)
+        {
+            packet1.data.2 = quantication_quantity
+        }
+        else
+        {
+            if(packet1.data.2 % quantication_quantity == 0)
+            {
+                packet1.data.2 = (packet1.data.2 / quantication_quantity) * quantication_quantity
+            }
+            else
+            {
+                packet1.data.2 = ((packet1.data.2 / quantication_quantity) + 1) * quantication_quantity
+            }
+        }
+        log(str:"cc:packet1.data.2")
+        midi_seq_.change_controller(value:packet1.data.2, channel:current_channel)
         var packetList:MIDIPacketList = MIDIPacketList(numPackets: 1, packet: packet1)
         MIDISend(outPort, dest, &packetList)
     }
@@ -168,6 +186,8 @@ class midi_dev
             instrusment_array.append(dict(name:key, id:value))
         }
         
+        quantication_quantity = UInt8(127/quantization)
+        log(str:"quantity:\(quantication_quantity)")
     }
     
     init()
@@ -175,6 +195,12 @@ class midi_dev
         prepare_data()
         log(str:"")
         midi_init()
+    }
+    
+    public func change_quantity()
+    {
+        quantication_quantity = UInt8(127/quantization)
+        log(str:"quantity:\(quantication_quantity)")
     }
     
     public func change_instrusment()
@@ -395,14 +421,6 @@ class midi_dev
             
         case 0xB0:
             result = String("[CC] Channel \(channel) controller \(d1) value \(d2)")
-            if(d2 < minimal_cc)
-            {
-                midi_seq_.change_controller(value:minimal_cc, channel:current_channel)
-            }
-            else
-            {
-                midi_seq_.change_controller(value:d2, channel:current_channel)
-            }
             self.midi_play_send_cc(dev_num: Int(current_dev), packet:packet)
         case 0xC0:
             result = String("[PC] Channel \(channel) program \(d1)")
