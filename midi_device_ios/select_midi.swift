@@ -354,7 +354,9 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
                     self.unselect_file_for_tableview(row:indexPath.row)
                 
                     globalInfo.select_file = self.file_class[indexPath.row].location!
-                     log(str:"globalInfo.select_file:\(globalInfo.select_file)\n")
+                    log(str:"globalInfo.select_file:\(globalInfo.select_file)\n")
+                    NotificationCenter.default.post(name: NOTIFICATION_FILE, object: nil)
+                    
                     tableView.isEditing = false
                 })
                 return [delete_action, select_action]

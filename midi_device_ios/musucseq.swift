@@ -190,6 +190,14 @@ public class midi_seq
         globalInfo.note = current_note
     }
     
+    public func reset()
+    {
+        if(current_note != nil && midi_song?.head != nil)
+        {
+            current_note = midi_song?.head
+        }
+    }
+    
     public func note_on(channel:UInt8)
     {
         sampler.startNote(current_note.note_msg.note, withVelocity: current_note.note_msg.velocity, onChannel: channel)

@@ -15,6 +15,7 @@ import UIKit
 
 let NOTIFICATION_NOTE = Notification.Name.init("MIDI_NOTE_NOTIFICATION")
 let NOTIFICATION_DEV = Notification.Name.init("MIDI_DEV_NOTIFICATION")
+let NOTIFICATION_FILE = Notification.Name.init("MIDI_FILE_NOTIFICATION")
 
 protocol data_protocol:class
 {
@@ -49,8 +50,33 @@ class config_midi_interface: UIViewController, UITabBarControllerDelegate, UITex
     @IBOutlet weak var quantizatin_cc_show: UILabel!
     @IBOutlet var quantization_cc: UIView!
     @IBOutlet weak var quantization_slider: UISlider!
+    @IBOutlet weak var note_info: UILabel!
+    
+    @IBAction func reset_music_pointer(_ sender: UIButton) {
+        globalInfo.midi_dev_obj.reset_music()
+        note_info.text = ""
+    }
+    
+    @IBAction func plus_cc(_ sender: UIButton) {
+        if(globalInfo.midi_dev_obj.quantization < 127)
+        {
+            globalInfo.midi_dev_obj.quantization += 1
+        }
+        quantizatin_cc_show.text = String(globalInfo.midi_dev_obj.quantization)
+        quantization_slider.value = Float(globalInfo.midi_dev_obj.quantization)
+        globalInfo.midi_dev_obj.change_quantity()
+    }
     
     
+    @IBAction func minus_cc(_ sender: UIButton) {
+        if(globalInfo.midi_dev_obj.quantization > 1)
+        {
+            globalInfo.midi_dev_obj.quantization -= 1
+        }
+        quantizatin_cc_show.text = String(globalInfo.midi_dev_obj.quantization)
+        quantization_slider.value = Float(globalInfo.midi_dev_obj.quantization)
+        globalInfo.midi_dev_obj.change_quantity()
+    }
     @IBAction func change_local_synth(_ sender: Any) {
         if(use_local_synth.isOn)
         {
@@ -110,6 +136,7 @@ class config_midi_interface: UIViewController, UITabBarControllerDelegate, UITex
         self.cc_slider.value = Float(Int(80))
         self.quantization_slider.value = Float(Int(globalInfo.midi_dev_obj.quantization))
         quantizatin_cc_show.text = String(globalInfo.midi_dev_obj.quantization)
+        midi_file_name.text = globalInfo.select_file.lastPathComponent
         if(globalInfo.midi_dev_obj.dev_array.count == 0)
         {
             out_dev_num.isEnabled = false
@@ -119,19 +146,26 @@ class config_midi_interface: UIViewController, UITabBarControllerDelegate, UITex
             out_dev_num.isEnabled = true
         }
         NotificationCenter.default.addObserver(self, selector: #selector(config_midi_interface.got_dev_change_event), name: NOTIFICATION_DEV, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(config_midi_interface.listener), name: NOTIFICATION_NOTE, object: nil)
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         log(str:"file:\(globalInfo.select_file.path)")
-        midi_file_name.text = globalInfo.select_file.lastPathComponent
-        globalInfo.midi_dev_obj.midi_seq_.midiFileURL = globalInfo.select_file
-        globalInfo.midi_dev_obj.midi_seq_.load_music()
         
         //instrusments_name.text = globalInfo.instrusment_.name
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    func listener(notification:Notification) -> Void
+    {
+        let info = notification.userInfo as? Dictionary<String, note>
+        let data:note = (info?["data"])!
+        
+        note_info.text = "Index:\(data.index), Note:\(data.note_msg.note), Tick:\(data.tick)" + ", Bar:\(data.bar_beat.bar), beat:\(data.bar_beat.beat)"
     }
     
     func got_dev_change_event(notification:Notification) -> Void

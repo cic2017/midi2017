@@ -25,12 +25,12 @@ class display_the_sheet_music: UIViewController
 {
 
     @IBOutlet weak var test_notification: UILabel!
-    var i = 0
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         NotificationCenter.default.addObserver(self, selector: #selector(display_the_sheet_music.listener), name: NOTIFICATION_NOTE, object: nil)
+       
         // Do any additional setup after loading the view.
         test_notification.text = globalInfo.instrusment_.name
         globalInfo.midi_dev_obj = midi_dev()
@@ -44,11 +44,10 @@ class display_the_sheet_music: UIViewController
     
     func listener(notification:Notification) -> Void
     {
-        log(str:"thread:\(Thread.current)")
+        let info = notification.userInfo as? Dictionary<String, note>
+        let data:note = (info?["data"])!
         
-        test_notification.text = "Index:\(globalInfo.note.index), Tick:\(globalInfo.note.tick)" + ", Bar:\(globalInfo.note.bar_beat.bar), beat:\(globalInfo.note.bar_beat.beat)"
-
-        i += 1
+        test_notification.text = "Index:\(data.index), Tick:\(data.tick)" + ", Bar:\(data.bar_beat.bar), beat:\(data.bar_beat.beat)"
     }
     /*
     // MARK: - Navigation

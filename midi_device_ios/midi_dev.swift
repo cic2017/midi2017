@@ -50,18 +50,13 @@ class midi_dev
         if(note_mapping.count != 0)
         {
             delete_note(note:note.note)
-            midi_seq_.get_note()
-        }
-        else
-        {
-            midi_seq_.get_note()
         }
         note = midi_seq_.current_note.note_msg
         note_mapping[key] = note.note
         //print(total_note_num)
-        log(str:"dev:\(Int(current_dev))")
+        log(str:"dev:\(Int(current_dev)) note index:\(midi_seq_.current_note.index)")
         midi_play_note(dev_num: Int(current_dev), event:note)
-        let user_info = ["data":note]
+        let user_info = ["data":midi_seq_.current_note]
         DispatchQueue.main.async {
             NotificationCenter.default.post(name: NOTIFICATION_NOTE, object: nil, userInfo: user_info)
         }
@@ -70,6 +65,7 @@ class midi_dev
         {
             midi_seq_.note_on(channel:current_channel)
         }
+        midi_seq_.get_note()
     }
     
     public func play_note_off(key:UInt8)
@@ -87,6 +83,11 @@ class midi_dev
             }
             note_mapping.removeValue(forKey: key)
         }
+    }
+    
+    public func reset_music()
+    {
+        midi_seq_.reset()
     }
     
     func midi_play_note(dev_num: Int, event:MIDINoteMessage)
@@ -134,22 +135,22 @@ class midi_dev
         }
         
         var tmp = packet.data.2 / quantication_quantity
-        if(tmp <= 0)
+        if(tmp <= 1)
         {
             cc = quantication_quantity
-            log(str:"cc:\(cc)")
+            log(str:"cc:\(cc) quantication_quantity:\(quantication_quantity)")
         }
         else
         {
             if(tmp % quantication_quantity == 0)
             {
                 cc = tmp * quantication_quantity
-                log(str:"cc:\(cc)")
+                log(str:"cc:\(cc) quantication_quantity:\(quantication_quantity)")
             }
             else
             {
                 cc = (tmp + 1) * quantication_quantity
-                log(str:"cc:\(cc) 1:\(tmp)")
+                log(str:"cc:\(cc) 1:\(tmp) quantication_quantity:\(quantication_quantity)")
             }
         }
         
@@ -207,6 +208,14 @@ class midi_dev
         prepare_data()
         log(str:"")
         midi_init()
+        NotificationCenter.default.addObserver(self, selector: #selector(midi_dev.file_change), name: NOTIFICATION_FILE, object: nil)
+    }
+    
+    @objc func file_change() -> Void
+    {
+        log(str:"file change")
+        midi_seq_.midiFileURL = globalInfo.select_file
+        midi_seq_.load_music()
     }
     
     public func change_quantity()
