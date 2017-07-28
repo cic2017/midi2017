@@ -186,6 +186,15 @@ class midi_dev
         //MIDIPortConnectSource(inPort, src, &src)
     }
     
+    func midi_play_pass_through_packet(dev_num: Int, packet:MIDIPacket)
+    {
+        let destNum = dev_num
+        let dest:MIDIEndpointRef = MIDIGetDestination(destNum)
+        log(str:"")
+        var packetList:MIDIPacketList = MIDIPacketList(numPackets: 1, packet: packet)
+        MIDISend(outPort, dest, &packetList)
+    }
+    
     func prepare_data()
     {
         //init channel arr
@@ -431,28 +440,33 @@ class midi_dev
             result = String("Note off. Channel \(channel) note \(d1) velocity \(d2)")
             self.play_note_off(key:d1)
             // forward to sampler
+            break
             
         case 0x90:
             result = String("Note on. Channel \(channel) note \(d1) velocity \(d2)")
             self.play_note_on(key:d1)
             // forward to sampler
+            break
             
         case 0xA0:
             result = String("Polyphonic Key Pressure (Aftertouch). Channel \(channel) note \(d1) pressure \(d2)")
-            
+            self.midi_play_pass_through_packet(dev_num: Int(current_dev), packet:packet)
         case 0xB0:
             result = String("[CC] Channel \(channel) controller \(d1) value \(d2)")
             self.midi_play_send_cc(dev_num: Int(current_dev), packet:packet)
+            break
         case 0xC0:
             result = String("[PC] Channel \(channel) program \(d1)")
-            
+            self.midi_play_pass_through_packet(dev_num: Int(current_dev), packet:packet)
         case 0xD0:
             result = String("Channel Pressure (Aftertouch). Channel \(channel) pressure \(d1)")
-            
+            self.midi_play_pass_through_packet(dev_num: Int(current_dev), packet:packet)
         case 0xE0:
             result = String("Pitch Bend Change. Channel \(channel) lsb \(d1) msb \(d2)")
-            
-        default: result = String("Unhandled message \(status)")
+            self.midi_play_pass_through_packet(dev_num: Int(current_dev), packet:packet)
+        default:
+            result = String("Unhandled message \(status)")
+            self.midi_play_pass_through_packet(dev_num: Int(current_dev), packet:packet)
         }
         log(str:result)
     }

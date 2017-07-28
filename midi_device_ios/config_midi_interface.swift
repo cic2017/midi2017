@@ -140,10 +140,12 @@ class config_midi_interface: UIViewController, UITabBarControllerDelegate, UITex
         if(globalInfo.midi_dev_obj.dev_array.count == 0)
         {
             out_dev_num.isEnabled = false
+            out_dev_num.text = "No avalible device"
         }
         else
         {
             out_dev_num.isEnabled = true
+            out_dev_num.text = "Press me for select device"
         }
         NotificationCenter.default.addObserver(self, selector: #selector(config_midi_interface.got_dev_change_event), name: NOTIFICATION_DEV, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(config_midi_interface.listener), name: NOTIFICATION_NOTE, object: nil)
@@ -174,10 +176,12 @@ class config_midi_interface: UIViewController, UITabBarControllerDelegate, UITex
         if(globalInfo.midi_dev_obj.dev_array.count == 0)
         {
             out_dev_num.isEnabled = false
+            out_dev_num.text = "No avalible device"
         }
         else
         {
             out_dev_num.isEnabled = true
+            out_dev_num.text = "Press me for select device"
         }
     }
     /* //Close keybroad
