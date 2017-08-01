@@ -206,6 +206,7 @@ public class midi_seq
     public func change_controller(value:UInt8, channel:UInt8)
     {
         sampler.sendController(7, withValue: value, onChannel: channel)
+
     }
     
     //for local sythesizer

@@ -51,6 +51,7 @@ class config_midi_interface: UIViewController, UITabBarControllerDelegate, UITex
     @IBOutlet var quantization_cc: UIView!
     @IBOutlet weak var quantization_slider: UISlider!
     @IBOutlet weak var note_info: UILabel!
+    @IBOutlet weak var note_action_mode: UITextField!
     
     @IBAction func reset_music_pointer(_ sender: UIButton) {
         globalInfo.midi_dev_obj.reset_music()
@@ -126,12 +127,14 @@ class config_midi_interface: UIViewController, UITabBarControllerDelegate, UITex
         }
         out_dev_num.delegate = self
         channel_num.delegate = self
+        note_action_mode.delegate = self
         intstrument_name.delegate = self
         pickview.delegate = self
         pickview.dataSource = self
         out_dev_num.inputView = pickview
         channel_num.inputView = pickview
         intstrument_name.inputView = pickview
+        note_action_mode.inputView = pickview
         self.tabBarController?.delegate = self
         self.cc_slider.value = Float(Int(80))
         self.quantization_slider.value = Float(Int(globalInfo.midi_dev_obj.quantization))
@@ -208,6 +211,9 @@ class config_midi_interface: UIViewController, UITabBarControllerDelegate, UITex
             log(str:"Edit intstrument")
             current_arr = globalInfo.midi_dev_obj.instrusment_array
             break
+        case note_action_mode:
+            log(str:"Edit note action")
+            current_arr = globalInfo.midi_dev_obj.mode
         default:
             log(str:"default")
         }
@@ -240,6 +246,11 @@ class config_midi_interface: UIViewController, UITabBarControllerDelegate, UITex
         {
             active_textField.text = String(current_arr[row].name)
             globalInfo.midi_dev_obj.current_dev = current_arr[row].id
+        }
+        else if(current_arr[row].name.range(of: "Turn off") != nil)
+        {
+            active_textField.text = String(current_arr[row].id)
+            globalInfo.midi_dev_obj.note_mode = current_arr[row].id
         }
         else
         {

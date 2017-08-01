@@ -9,6 +9,11 @@
 import Foundation
 import AVFoundation
 
+let note_acion_mode: [String: UInt8] = [
+    "Turn off all note once catch a note on" : 0,
+    "Turn off note depends on Midi input event note" : 1,
+]
+
 class midi_dev
 {
     let midi_seq_ = midi_seq()
@@ -28,8 +33,12 @@ class midi_dev
     var note_mapping = [UInt8:UInt8]() //key:midiDev input, value:midiFile note
     var quantization = 8
     var quantication_quantity:UInt8 = 1
+    var mode=[dict]()
+    var note_mode:UInt8=1
+    
     func delete_note(note:UInt8)
     {
+        /*
         for (key, value) in note_mapping
         {
             if(value == note)
@@ -41,18 +50,32 @@ class midi_dev
                 }
             }
         }
+    */
+        for (key, value) in note_mapping
+        {
+            midi_play_note_off(dev_num: Int(current_dev), event:value)
+            if(use_local_sythesizer)
+            {
+                midi_seq_.note_off(channel:current_channel, note:value)
+            }
+        }
     }
 
-    
     public func play_note_on(key:UInt8)
     {
         var note:MIDINoteMessage = midi_seq_.current_note.note_msg
-        if(note_mapping.count != 0)
+        if(note_mode == 0)
         {
-            delete_note(note:note.note)
+            if(note_mapping.count != 0)
+            {
+                delete_note(note:note.note)
+            }
+            note_mapping.removeAll()
         }
+        
         note = midi_seq_.current_note.note_msg
         note_mapping[key] = note.note
+        log(str:"test:\(key)")
         //print(total_note_num)
         log(str:"dev:\(Int(current_dev)) note index:\(midi_seq_.current_note.index)")
         midi_play_note(dev_num: Int(current_dev), event:note)
@@ -71,18 +94,49 @@ class midi_dev
     public func play_note_off(key:UInt8)
     {
         //let note:MIDINoteMessage = (midi_seq_.current_note.note_msg)
-        log(str:"")
+        
         if(note_mapping[key] != nil)
         {
             let note = note_mapping[key]
-           log(str:"dev:\(Int(current_dev))")
-            midi_play_note_off(dev_num: Int(current_dev), event:note!)
-            if(use_local_sythesizer)
+            log(str:"dev:\(Int(current_dev))")
+            if(note_mode == 1)
             {
-                midi_seq_.note_off(channel:current_channel, note:note!)
+                note_mapping.removeValue(forKey: key)
+                if(check_note_is_exist(note:note!) == false)
+                {
+                    midi_play_note_off(dev_num: Int(current_dev), event:note!)
+                    if(use_local_sythesizer)
+                    {
+                        midi_seq_.note_off(channel:current_channel, note:note!)
+                    }
+                }
             }
-            note_mapping.removeValue(forKey: key)
+            else
+            {
+                midi_play_note_off(dev_num: Int(current_dev), event:note!)
+                if(use_local_sythesizer)
+                {
+                    midi_seq_.note_off(channel:current_channel, note:note!)
+                }
+                note_mapping.removeValue(forKey: key)
+            }
         }
+        else
+        {
+            log(str:"nil")
+        }
+    }
+    
+    func check_note_is_exist(note:UInt8) -> Bool
+    {
+        for (_, value) in note_mapping
+        {
+            if(value == note)
+            {
+                return true
+            }
+        }
+        return false
     }
     
     public func reset_music()
@@ -206,6 +260,11 @@ class midi_dev
         for (key, value) in soundfontPresets
         {
             instrusment_array.append(dict(name:key, id:value))
+        }
+        
+        for (key, value) in note_acion_mode
+        {
+            mode.append(dict(name:key, id:value))
         }
         
         quantication_quantity = UInt8(127/quantization)
@@ -435,18 +494,18 @@ class midi_dev
         var result=""
         
         switch rawStatus {
-            
+        
         case 0x80:
             result = String("Note off. Channel \(channel) note \(d1) velocity \(d2)")
             self.play_note_off(key:d1)
             // forward to sampler
-            break
+            //break
             
         case 0x90:
             result = String("Note on. Channel \(channel) note \(d1) velocity \(d2)")
             self.play_note_on(key:d1)
             // forward to sampler
-            break
+            //break
             
         case 0xA0:
             result = String("Polyphonic Key Pressure (Aftertouch). Channel \(channel) note \(d1) pressure \(d2)")
@@ -469,6 +528,7 @@ class midi_dev
             self.midi_play_pass_through_packet(dev_num: Int(current_dev), packet:packet)
         }
         log(str:result)
+        
     }
     
     func MyMIDIReadBlock(packetList: UnsafePointer<MIDIPacketList>, srcConnRefCon: UnsafeMutableRawPointer?) -> Swift.Void {
@@ -477,10 +537,9 @@ class midi_dev
         var ap = UnsafeMutablePointer<MIDIPacket>.allocate(capacity: 1)
         ap.initialize(to:packet)
         
-        var p = ap.pointee
         //print("num: \(packets.numPackets)\n")
         for _ in 0 ..< packets.numPackets {
-            p = ap.pointee
+            let p = ap.pointee
             handle(p)
             //show_note_event(event:str_event)
             /*
