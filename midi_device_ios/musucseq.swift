@@ -209,6 +209,27 @@ public class midi_seq
 
     }
     
+    public func change_pitch_bend(msb:UInt8, lsb:UInt8, channel:UInt8)
+    {
+        
+        let bytes: [UInt8] = [lsb, msb]
+        
+        let u16 = UnsafePointer(bytes).withMemoryRebound(to: UInt16.self, capacity: 1) {
+            $0.pointee
+        }
+        log(str:"u16:\(u16)")
+        sampler.sendPitchBend(u16, onChannel: channel)
+        //sampler.sendProgramChange(56, bankMSB: msb, bankLSB: lsb, onChannel: channel)
+        
+    }
+    
+    public func change_pitch_bend(value:UInt16, channel:UInt8)
+    {
+
+        sampler.sendPitchBend(value, onChannel: channel)
+        //sampler.sendProgramChange(56, bankMSB: msb, bankLSB: lsb, onChannel: channel)
+        
+    }
     //for local sythesizer
     public func note_off(channel:UInt8, note:UInt8)
     {

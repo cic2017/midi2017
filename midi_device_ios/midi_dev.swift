@@ -168,6 +168,11 @@ class midi_dev
         //MIDIPortConnectSource(inPort, src, &src)
     }
     
+    public func midi_send_cc(value:UInt8)
+    {
+        midi_seq_.change_controller(value:value, channel:current_channel)
+    }
+    
     func midi_play_send_cc(dev_num: Int, packet:MIDIPacket)
     {
         let destNum = dev_num
@@ -187,7 +192,7 @@ class midi_dev
         {
             cc = packet.data.2
         }
-        
+        /*
         var tmp = packet.data.2 / quantication_quantity
         if(tmp <= 1)
         {
@@ -212,6 +217,7 @@ class midi_dev
         {
             cc = 127
         }
+        */
         packet1.data.2 = cc
         log(str:"quantication_quantity:\(quantication_quantity) cc:\(packet.data.2) change to:\(cc)")
         midi_seq_.change_controller(value:cc, channel:current_channel)
@@ -522,6 +528,7 @@ class midi_dev
             self.midi_play_pass_through_packet(dev_num: Int(current_dev), packet:packet)
         case 0xE0:
             result = String("Pitch Bend Change. Channel \(channel) lsb \(d1) msb \(d2)")
+            midi_seq_.change_pitch_bend(msb: d2, lsb: d1, channel: channel)
             self.midi_play_pass_through_packet(dev_num: Int(current_dev), packet:packet)
         default:
             result = String("Unhandled message \(status)")

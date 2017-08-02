@@ -20,9 +20,10 @@ class get_dev_from
     }
 }
 */
-class set_dev: UIViewController {
+class set_dev: UIViewController, UIWebViewDelegate {
     
     @IBOutlet weak var webview: UIWebView!
+    var refresh_cntl:UIRefreshControl!
     
     @IBAction func download_midi(_ sender: Any) {
      //   webview.loadRequest(URLRequest(url: URL(string:"https://yuan-test.pancakeapps.com")!))
@@ -35,12 +36,22 @@ class set_dev: UIViewController {
         print("set dev page\n")
         print("test select midi\n")
         super.viewDidLoad()
-        
+        refresh_cntl = UIRefreshControl.init()
+        refresh_cntl.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        refresh_cntl.addTarget(self, action: #selector(set_dev.refresh), for: UIControlEvents.valueChanged)
+        webview.delegate = self
+        webview.scrollView.addSubview(refresh_cntl)
        // obj.params_protocol = self
        // obj.start()
         // Do any additional setup after loading the view.
     }
  
+    func refresh()
+    {
+        webview.loadRequest(URLRequest(url: URL(string:"http://yuan-test.pancakeapps.com")!))
+        self.refresh_cntl.endRefreshing()
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

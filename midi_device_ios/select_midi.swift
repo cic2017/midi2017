@@ -90,7 +90,7 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
     //var fileList:[(name:String, url:String)] = []
     var file_class:[midi_file] = []
     var localfile = [String]()
-    var refresh_cntl = UIRefreshControl()
+    var refresh_cntl:UIRefreshControl!
     
     @IBOutlet weak var tableview: UITableView!
     @IBOutlet weak var downloadProgress: UIProgressView!
@@ -100,9 +100,26 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
         startDownloading(url: urlLink!)
         list_local_midi_file()
         list_directory()
+        refresh_cntl = UIRefreshControl()
+        refresh_cntl.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        refresh_cntl.addTarget(self, action: #selector(select_midi.refresh), for: UIControlEvents.valueChanged)
+        tableview.addSubview(refresh_cntl)
+        
         //downloadTask = defaultSession.downloadTask(with: urlLink)
         //downloadTask.resume()
         // Do any additional setup after loading the view.
+    }
+    
+    func refresh()
+    {
+        let urlLink = URL.init(string: "https://www.dropbox.com/s/w8emodssfeo8wq6/midi_menu.txt?dl=1")
+        
+        file_class.removeAll()
+        startDownloading(url: urlLink!)
+        list_local_midi_file()
+        list_directory()
+        self.tableview.reloadData()
+        self.refresh_cntl.endRefreshing()
     }
     
     func startDownloading (url:URL) {

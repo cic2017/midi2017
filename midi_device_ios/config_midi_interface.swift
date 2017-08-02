@@ -52,6 +52,7 @@ class config_midi_interface: UIViewController, UITabBarControllerDelegate, UITex
     @IBOutlet weak var quantization_slider: UISlider!
     @IBOutlet weak var note_info: UILabel!
     @IBOutlet weak var note_action_mode: UITextField!
+    @IBOutlet weak var pitch_bend: UISlider!
     
     @IBAction func reset_music_pointer(_ sender: UIButton) {
         globalInfo.midi_dev_obj.reset_music()
@@ -92,6 +93,7 @@ class config_midi_interface: UIViewController, UITabBarControllerDelegate, UITex
     @IBAction func play_sound_on(_ sender: UIButton) {
         
         globalInfo.midi_dev_obj.play_note_on(key:0x81)
+        globalInfo.midi_dev_obj.midi_send_cc(value: globalInfo.midi_dev_obj.minimal_cc)
         //globalInfo.note = midi_seq_.current_note
     }
     
@@ -104,6 +106,11 @@ class config_midi_interface: UIViewController, UITabBarControllerDelegate, UITex
         quantizatin_cc_show.text = String(Int(sender.value))
         globalInfo.midi_dev_obj.quantization = Int(sender.value)
         globalInfo.midi_dev_obj.change_quantity()
+    }
+    
+    @IBAction func pitch_bend_change(_ sender: UISlider) {
+        let value = UInt16(sender.value)
+        globalInfo.midi_dev_obj.midi_seq_.change_pitch_bend(value: value, channel: 0)
     }
     
     @IBAction func play_sound_off(_ sender: UIButton) {

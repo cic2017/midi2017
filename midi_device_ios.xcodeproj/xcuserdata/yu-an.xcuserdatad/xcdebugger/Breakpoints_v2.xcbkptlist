@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "midi_device_ios/musucseq.swift"
-            timestampString = "523176780.339805"
+            timestampString = "523262695.743296"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "221"
-            endingLineNumber = "221"
+            startingLineNumber = "242"
+            endingLineNumber = "242"
             landmarkName = "note_off(channel:)"
             landmarkType = "7">
          </BreakpointContent>
