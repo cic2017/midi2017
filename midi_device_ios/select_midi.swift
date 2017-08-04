@@ -277,9 +277,11 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
+        log(str:"")
         let cell = UITableViewCell(style: UITableViewCellStyle.default, reuseIdentifier: "cell")
-        cell.textLabel?.text = file_class[indexPath.row].name
+        cell.textLabel?.text = "\(indexPath.row). \(file_class[indexPath.row].name)"
         is_exist(file: file_class[indexPath.row])
+        log(str:"item:\(file_class[indexPath.row].name) row:\(indexPath.row)")
         file_class[indexPath.row].cell_index = indexPath
         if(file_class[indexPath.row].is_exist == false)
         {
@@ -384,15 +386,15 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
     
     func unselect_file_for_tableview(row:Int)
     {
-        var i = 0
+        log(str:"cnt:\(file_class.count)")
         for item in file_class
         {
-            if(i != row)
+            if(item.cell_index != nil && item.cell_index.row != row)
             {
+                
                 item.is_select = false
                 tableview.cellForRow(at: item.cell_index)?.textLabel?.textColor = UIColor.black
             }
-            i+=1
         }
     }
     
@@ -403,7 +405,7 @@ class select_midi: UIViewController, UITableViewDelegate, UITableViewDataSource,
         let documentDirectoryPath:String = path[0]+"/"
         for item in localfile
         {
-            log(str: "file_name:\(file_name), item:\(item)")
+           // log(str: "file_name:\(file_name), item:\(item)")
             if(item.range(of: file_name) != nil)
             {
                 file.is_exist = true

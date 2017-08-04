@@ -164,7 +164,7 @@ class config_midi_interface: UIViewController, UITabBarControllerDelegate, UITex
     
     override func viewWillAppear(_ animated: Bool) {
         log(str:"file:\(globalInfo.select_file.path)")
-        
+        midi_file_name.text = globalInfo.select_file.lastPathComponent
         //instrusments_name.text = globalInfo.instrusment_.name
     }
     override func didReceiveMemoryWarning() {
